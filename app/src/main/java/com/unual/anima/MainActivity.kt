@@ -63,8 +63,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 .map { results ->
                     for (i in 0..results.size) {
-                        var name = results[0].toString()
-                        var url = "http://www.dilidili.wang&{${results[0]}}"
+                        var name = results[0][i].toString()
+                        var url = "http://www.dilidili.wang${results[1][i]}"
                         get_one_anima(name, url)
                     }
                 }
