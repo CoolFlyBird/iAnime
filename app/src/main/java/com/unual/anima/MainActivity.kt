@@ -28,11 +28,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        get_week_anima()
+        getWeekAnima()
     }
 
     // 追更动漫
-    fun get_week_anima() {
+    fun getWeekAnima() {
         var week = ArrayList<WeekDayClass>()
         week.add(WeekDayClass.Mon)
         week.add(WeekDayClass.Tues)
@@ -41,13 +41,13 @@ class MainActivity : AppCompatActivity() {
         week.add(WeekDayClass.Fri)
         week.add(WeekDayClass.Sat)
         week.add(WeekDayClass.Sun)
-        load_page("http://www.dilidili.wang/", { page ->
-            get_oneday(page, week)
+        loadPage("http://www.dilidili.wang/", { page ->
+            getOneDay(page, week)
         })
     }
 
-    // 每一天更新动漫列表
-    fun get_oneday(page: String, week: List<WeekDayClass>) {
+    // 更新动漫列表
+    fun getOneDay(page: String, week: List<WeekDayClass>) {
         var jxDocument = JXDocument.create(page)
         Observable.fromIterable(week)
                 .subscribeOn(Schedulers.io())
@@ -56,36 +56,53 @@ class MainActivity : AppCompatActivity() {
                     var urlPath = "//ul[@class=\"wrp animate\"]/li[@class=\"${day.value()}\"]/div[@class=\"book small\"]/a/@href"
                     val nameResult = jxDocument.sel(namePath)
                     val urlResult = jxDocument.sel(urlPath)
-                    var result = ArrayList<List<Any>>()
-                    result.add(nameResult)
-                    result.add(urlResult)
+                    var result: ArrayList<KeyValue> = ArrayList()
+                    for (i in 0 until nameResult.size) {
+                        var name = nameResult[i].toString()
+                        var url = "http://www.dilidili.wang${urlResult[i]}"
+                        var keyValue = KeyValue(name, url)
+//                        Log.e("TAG", "${day.key()}->$name -> $url")
+                        result.add(keyValue)
+                    }
                     result
                 }
-                .map { results ->
-                    for (i in 0..results.size) {
-                        var name = results[0][i].toString()
-                        var url = "http://www.dilidili.wang${results[1][i]}"
-                        get_one_anima(name, url)
+                .collect(
+                        // 动漫列表(一周列表) -> 动漫列表(一天列表)
+                        { ArrayList<ArrayList<KeyValue>>() },
+                        { list, item ->
+                            list.add(item)
+                        }
+                )
+                .map { list ->
+                    for (animaDay in list) {//动漫列表(一天列表) in 动漫列表(一周列表)
+                        for (anima in animaDay) {//
+                            var name = anima.key//名字
+                            var url = anima.value//链接
+                            Log.e("TAG", "$name -> $url")
+                        }
+                        Log.e("TAG", "------")
                     }
                 }
                 .subscribe()
-
     }
 
+    //处理动画
+    private fun handlerAnimas(animas: ArrayList<ArrayList<KeyValue>>) {
+    }
 
-    // 更新动漫，具体每一集
-    fun get_one_anima(name: String, url: String) {
-        load_page(url, { page ->
+    // 具体动漫的每一集
+    fun getOneAnima(name: String, url: String) {
+        loadPage(url, { page ->
             Log.e("TAG", "${Thread.currentThread().name} ->${page}")
         })
     }
 
     // 更新动漫，具体地址
-    fun get_anima_video(name: String, url: String) {
+    fun getAnimaVideo(name: String, url: String) {
 
     }
 
-    fun load_page(url: String, callback: (String) -> Unit) {
+    fun loadPage(url: String, callback: (String) -> Unit) {
         Observable.just(url)
                 .subscribeOn(Schedulers.io())
                 .map { pageUrl ->

@@ -651,7 +651,6 @@ public class XpathParser extends Parser {
 
         @Override
         public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            System.err.println("NodeTestContext->accept " + visitor.getClass() + "|");
             if (visitor instanceof XpathVisitor)
                 return ((XpathVisitor<? extends T>) visitor).visitNodeTest(this);
             else return visitor.visitChildren(this);
