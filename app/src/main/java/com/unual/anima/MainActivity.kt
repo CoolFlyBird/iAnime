@@ -5,6 +5,12 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.LinearLayoutManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import com.unual.anima.adapter.DayAnimasAdapter
 import com.unual.anima.base.BaseActivity
 import com.unual.anima.data.Anima
 import com.unual.anima.data.Repository
@@ -14,6 +20,8 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_day_anima.*
+import org.greenrobot.eventbus.EventBus
 import java.util.ArrayList
 
 class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
@@ -100,6 +108,37 @@ class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         override fun getCount() = fragments.size
+    }
+
+    class DayAnimasFragment : Fragment() {
+        fun Fragment.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
+            Toast.makeText(context, message, duration).show()
+        }
+
+        private var animas: ArrayList<Anima> = ArrayList()
+        private var adapter: DayAnimasAdapter? = null
+
+        fun setValue(data: List<Anima>) {
+            animas.clear()
+            animas.addAll(data)
+            recycler?.adapter?.notifyDataSetChanged()
+        }
+
+
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+            return inflater.inflate(R.layout.fragment_day_anima, container, false)
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            recycler?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = DayAnimasAdapter(R.layout.item_anima_list, { item ->
+                EventBus.getDefault().post(item)
+            })
+            adapter?.setNewData(animas)
+            recycler?.adapter = adapter
+        }
+
     }
 
 }

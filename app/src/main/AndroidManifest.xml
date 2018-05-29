@@ -18,6 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".AnimaActivity" />
+        <activity
+            android:name=".WebPlayerActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

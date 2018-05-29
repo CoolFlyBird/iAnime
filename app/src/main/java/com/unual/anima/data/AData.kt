@@ -41,10 +41,10 @@ enum class WeekDayClass {
 
 class Anima(var name: String, var url: String) : Serializable
 
-class AnimaInfo(var name: String) {
+class AnimaInfo(var anima: Anima) {
     var list: ArrayList<AnimaVideo> = ArrayList()
 
-    class AnimaVideo(var videoName: String, var videoUrl: String)
+    class AnimaVideo(var videoName: String, var videoUrl: String):Serializable
 
     fun addAnimaVideo(video: AnimaVideo) {
         list.add(video)
