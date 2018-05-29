@@ -8,10 +8,6 @@ import com.unual.jsoupxpath.core.function.*;
 import com.unual.jsoupxpath.core.node.*;
 import com.unual.jsoupxpath.exception.NoSuchAxisException;
 import com.unual.jsoupxpath.exception.NoSuchFunctionException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +18,6 @@ public class Scanner {
     private static Map<String, AxisSelector> axisSelectorMap = new HashMap<>();
     private static Map<String, NodeTest> nodeTestMap = new HashMap<>();
     private static Map<String, Function> functionMap = new HashMap<>();
-    private static Logger logger = LoggerFactory.getLogger(Scanner.class);
 
     static {
         for (Class clazz : AXIS) {
@@ -34,27 +29,6 @@ public class Scanner {
         for (Class clazz : NODE) {
             registerNodeTest(clazz);
         }
-//        new FastClasspathScanner(Function.class.getPackage().getName())
-////                .verbose()
-//                .matchClassesImplementing(Function.class, new ImplementingClassMatchProcessor<Function>() {
-//                    @Override
-//                    public void processMatch(Class<? extends Function> funcClass) {
-//                        registerFunction(funcClass);
-//                    }
-//                })
-//                .matchClassesImplementing(NodeTest.class, new ImplementingClassMatchProcessor<NodeTest>() {
-//                    @Override
-//                    public void processMatch(Class<? extends NodeTest> nodeTestClass) {
-//                        registerNodeTest(nodeTestClass);
-//                    }
-//                })
-//                .matchClassesImplementing(AxisSelector.class, new ImplementingClassMatchProcessor<AxisSelector>() {
-//                    @Override
-//                    public void processMatch(Class<? extends AxisSelector> axisSelectorClass) {
-//                        registerAxisSelector(axisSelectorClass);
-//                    }
-//                })
-//                .scan();
     }
 
     public static AxisSelector findSelectorByName(String selectorName) {
@@ -87,7 +61,7 @@ public class Scanner {
             function = func.newInstance();
             functionMap.put(function.name(), function);
         } catch (Exception e) {
-            logger.info(ExceptionUtils.getRootCauseMessage(e), e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -97,7 +71,7 @@ public class Scanner {
             nodeTest = nodeTestClass.newInstance();
             nodeTestMap.put(nodeTest.name(), nodeTest);
         } catch (Exception e) {
-            logger.info(ExceptionUtils.getRootCauseMessage(e), e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -107,7 +81,7 @@ public class Scanner {
             axisSelector = axisSelectorClass.newInstance();
             axisSelectorMap.put(axisSelector.name(), axisSelector);
         } catch (Exception e) {
-            logger.info(ExceptionUtils.getRootCauseMessage(e), e);
+            System.out.println(e.getMessage());
         }
     }
 

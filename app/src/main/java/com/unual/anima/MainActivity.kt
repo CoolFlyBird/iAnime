@@ -1,40 +1,26 @@
 package com.unual.anima
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.util.Log
+import android.support.v4.widget.SwipeRefreshLayout
+import com.unual.anima.base.BaseActivity
+import com.unual.anima.data.Anima
+import com.unual.anima.data.Repository
+import com.unual.anima.data.WeekDayClass
 import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.util.ArrayList
 
-class MainActivity : AppCompatActivity() {
-    private var client: OkHttpClient
+class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
+    private val fragments: ArrayList<DayAnimasFragment> = ArrayList()
+    private var week = ArrayList<WeekDayClass>()
 
     init {
-        var builder = OkHttpClient.Builder()
-        builder.addInterceptor { chain: Interceptor.Chain ->
-            val originalRequest = chain.request()
-            val authorised = originalRequest.newBuilder().header("user-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36")
-            val request = authorised.build()
-            chain.proceed(request)
-        }
-        client = builder.build()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        var week = ArrayList<WeekDayClass>()
         week.add(WeekDayClass.Mon)
         week.add(WeekDayClass.Tues)
         week.add(WeekDayClass.Wed)
@@ -42,15 +28,24 @@ class MainActivity : AppCompatActivity() {
         week.add(WeekDayClass.Fri)
         week.add(WeekDayClass.Sat)
         week.add(WeekDayClass.Sun)
-        val fragments: ArrayList<AnimaListFragment> = ArrayList()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         for (i in 0 until week.size) {
-            fragments.add(AnimaListFragment())
+            fragments.add(DayAnimasFragment())
         }
         viewPager.adapter = MyPagerAdapter(supportFragmentManager, fragments, week)
         tabLayout.setupWithViewPager(viewPager)
+        refresh.setOnRefreshListener(this)
+        onRefresh()
+    }
 
+    override fun onRefresh() {
+        refresh.isRefreshing = true
         getWeekAnima(week, { list ->
-            Log.e("TAG", "${Thread.currentThread().name} getWeekAnima")
+            refresh.isRefreshing = false
             for (i in 0 until list.size) {
                 fragments[i].setValue(list[i])
             }
@@ -58,14 +53,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 追更动漫
-    fun getWeekAnima(week: List<WeekDayClass>, callback: (List<List<KeyValue>>) -> Unit) {
-        loadPage("http://www.dilidili.wang/", { htmlPage ->
+    private fun getWeekAnima(week: List<WeekDayClass>, callback: (List<List<Anima>>) -> Unit) {
+        Repository.instance.loadPage("http://www.dilidili.wang/", { htmlPage ->
             getOneDay(htmlPage, week, callback)
         })
     }
 
     // 更新动漫列表
-    fun getOneDay(page: String, week: List<WeekDayClass>, callback: (List<List<KeyValue>>) -> Unit) {
+    private fun getOneDay(page: String, week: List<WeekDayClass>, callback: (List<List<Anima>>) -> Unit) {
         var jxDocument = JXDocument.create(page)
         Observable.fromIterable(week)
                 .subscribeOn(Schedulers.io())
@@ -74,74 +69,34 @@ class MainActivity : AppCompatActivity() {
                     var urlPath = "//ul[@class=\"wrp animate\"]/li[@class=\"${day.value()}\"]/div[@class=\"book small\"]/a/@href"
                     val nameResult = jxDocument.sel(namePath)
                     val urlResult = jxDocument.sel(urlPath)
-                    var result: ArrayList<KeyValue> = ArrayList()
+                    var result: ArrayList<Anima> = ArrayList()
                     for (i in 0 until nameResult.size) {
                         var name = nameResult[i].toString()
                         var url = "http://www.dilidili.wang${urlResult[i]}"
-                        var keyValue = KeyValue(name, url)
-//                        Log.e("TAG", "${day.key()}->$name -> $url")
-                        result.add(keyValue)
+                        var anima = Anima(name, url)
+                        result.add(anima)
                     }
                     result
                 }
                 .collect(
                         // 动漫列表(一周列表) -> 动漫列表(一天列表)
-                        { ArrayList<ArrayList<KeyValue>>() },
+                        { ArrayList<ArrayList<Anima>>() },
                         { list, item ->
                             list.add(item)
                         }
                 )
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { list ->
-                    for (animaDay in list) {//动漫列表(一天列表) in 动漫列表(一周列表)
-                        for (anima in animaDay) {//
-                            var name = anima.key//名字
-                            var url = anima.value//链接
-                            Log.e("TAG", "$name -> $url")
-                        }
-                        Log.e("TAG", "------")
-                    }
-                    list
+                    // 动漫列表(一周列表) contain 动漫列表(一天列表)
                     callback.invoke(list)
                 }
     }
 
-    //处理动画
-    private fun handlerAnimas(animas: ArrayList<ArrayList<KeyValue>>) {
-    }
 
-    // 具体动漫的每一集
-    fun getOneAnima(name: String, url: String) {
-        loadPage(url, { page ->
-            Log.e("TAG", "${Thread.currentThread().name} ->${page}")
-        })
-    }
-
-    // 更新动漫，具体地址
-    fun getAnimaVideo(name: String, url: String) {
-
-    }
-
-    fun loadPage(url: String, callback: (String) -> Unit) {
-        Observable.just(url)
-                .subscribeOn(Schedulers.io())
-                .map { pageUrl ->
-                    var respone = client.newCall(Request.Builder().url(pageUrl).build()).execute()
-                    if (respone.isSuccessful) {
-                        callback.invoke(respone.body().string())
-                    } else {
-                        callback.invoke("")
-                    }
-                }
-                .subscribe()
-    }
-
-    class MyPagerAdapter(fm: FragmentManager, val fragments: ArrayList<AnimaListFragment>, val tabs: List<WeekDayClass>) : FragmentPagerAdapter(fm) {
-
+    class MyPagerAdapter(fm: FragmentManager, private val fragments: ArrayList<DayAnimasFragment>, private val tabs: List<WeekDayClass>) : FragmentPagerAdapter(fm) {
         override fun getPageTitle(position: Int) = tabs[position].key()
-
         override fun getItem(position: Int): Fragment {
-            return fragments.get(position)
+            return fragments[position]
         }
 
         override fun getCount() = fragments.size

@@ -1,4 +1,6 @@
-package com.unual.anima
+package com.unual.anima.data
+
+import java.io.Serializable
 
 /**
  * Created by unual on 2018/5/28.
@@ -37,6 +39,15 @@ enum class WeekDayClass {
     abstract fun value(): String
 }
 
-class KeyValue(var key: String, var value: String)
+class Anima(var name: String, var url: String) : Serializable
 
-class WebUrl(name: String, url: String)
+class AnimaInfo(var name: String) {
+    var list: ArrayList<AnimaVideo> = ArrayList()
+
+    class AnimaVideo(var videoName: String, var videoUrl: String)
+
+    fun addAnimaVideo(video: AnimaVideo) {
+        list.add(video)
+    }
+}
+
