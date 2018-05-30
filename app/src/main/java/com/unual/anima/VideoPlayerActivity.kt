@@ -1,6 +1,8 @@
 package com.unual.anima
 
 import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -21,6 +23,13 @@ import java.util.ArrayList
  * Created by Administrator on 2018/5/30.
  */
 class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
+    val flag = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_player)
@@ -88,5 +97,24 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
 
     override fun getGSYVideoOptionBuilder(): GSYVideoOptionBuilder? {
         return null
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (window.decorView.systemUiVisibility != flag) {
+            fullScreen()
+            return true
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && (window.decorView.systemUiVisibility != flag)) {
+            fullScreen()
+        }
+    }
+
+    private fun fullScreen() {
+        window.decorView.systemUiVisibility = flag
     }
 }

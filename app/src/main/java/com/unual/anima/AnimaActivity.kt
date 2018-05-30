@@ -28,10 +28,11 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         setContentView(R.layout.activity_anima)
         val anima = intent.getSerializableExtra(Constant.KEY_INTENT) as Anima
         if (anima != null) {
+            title = anima.name
             animaInfo = AnimaInfo(anima)
         }
         refresh.setOnRefreshListener(this)
-        adapter = AnimaVideosAdapter(com.unual.anima.R.layout.item_anima_list, { animaVideo ->
+        adapter = AnimaVideosAdapter(R.layout.item_anima_list, { animaVideo ->
             getAnimaVideo(animaVideo.videoUrl, { url ->
                 Log.e("TAG", "page ->${animaVideo.videoUrl}")
                 var intent = Intent(this, WebPlayerActivity::class.java)
