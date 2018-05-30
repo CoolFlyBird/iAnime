@@ -15,7 +15,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_anima.*
 import java.util.ArrayList
-import java.util.regex.Pattern
 
 /**
  * Created by Administrator on 2018/5/29.
@@ -35,12 +34,17 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         adapter = AnimaVideosAdapter(com.unual.anima.R.layout.item_anima_list, { animaVideo ->
             getAnimaVideo(animaVideo.videoUrl, { url ->
                 Log.e("TAG", "page ->${animaVideo.videoUrl}")
+                var intent = Intent(this, WebPlayerActivity::class.java)
                 if (!url.isEmpty()) {
                     animaVideo.videoUrl = url
                 }
+
+                if (url.endsWith(".mp4")) {
+                    intent = Intent(this, VideoPlayerActivity::class.java)
+                }
                 Log.e("TAG", "load ->${animaVideo.videoUrl}")
-                var intent = Intent(this, WebPlayerActivity::class.java)
-                intent.putExtra(Constant.KEY_INTENT, animaVideo)
+//                var intent = Intent(this, WebPlayerActivity::class.java)
+                intent!!.putExtra(Constant.KEY_INTENT, animaVideo)
                 startActivity(intent)
             })
 
@@ -71,7 +75,8 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                     val urlResult = jxDocument.sel(urlPath)
                     val result: ArrayList<AnimaInfo.AnimaVideo> = ArrayList()
                     for (i in 0 until nameResult.size) {
-                        var name = nameResult[i].toString().replace(animaInfo?.anima?.name ?: "", "")
+                        var name = nameResult[i].toString().replace(animaInfo?.anima?.name
+                                ?: "", "")
                         var url = "${urlResult[i]}"
                         result.add(AnimaInfo.AnimaVideo(name, url))
                     }
@@ -102,7 +107,9 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 //                        ["www.ikanfan.cn", "xin.tcpspc.com","110.80.136.9:2100", "acvideo.fun:2100","moe.kirikiri.tv","www.yylep.com","moe.kirikiri.cc","107.jp255.com","tbm.alicdn.com","jx.itaoju.top"],//line4
 //                        ["v.pptv.com"],//line5
                         url = url.replace("var sourceUrl = \"", "").replace("\";", "")
-                        url = lines[0].toString() + url
+                        if (!url.endsWith(".mp4")) {
+                            url = lines[0].toString() + url
+                        }
                         url
                     }
                     .observeOn(AndroidSchedulers.mainThread())

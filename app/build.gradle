@@ -21,6 +21,8 @@ android {
 }
 
 dependencies {
+    implementation "com.android.support:multidex:1.0.1" // 多dex配置
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
@@ -37,6 +39,13 @@ dependencies {
 
     implementation 'org.greenrobot:eventbus:3.1.1'
 
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+
+    implementation('com.shuyu:gsyVideoPlayer-java:5.0.0-beta')
+            { exclude group: 'com.android.support' }
+    implementation 'com.shuyu:gsyVideoPlayer-arm64:5.0.0-beta'
+
     implementation project(':JsoupXpath')
+
 //    implementation 'cn.wanghaomiao:JsoupXpath:2.1-Beta'
 }

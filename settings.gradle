@@ -1,1 +1,1 @@
-include ':app', ':JsoupXpath'
+include ':app', ':JsoupXpath', ':videoplayer'

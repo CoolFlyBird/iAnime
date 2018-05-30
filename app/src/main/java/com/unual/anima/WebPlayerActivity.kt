@@ -1,6 +1,7 @@
 package com.unual.anima
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.webkit.WebView
@@ -59,8 +60,9 @@ class WebPlayerActivity : FullScreenActivity() {
 
     private inner class InsideWebViewClient : WebViewClient() {
         override// Force links to be opened inside WebView and not in Default Browser
-                // Thanks http://stackoverflow.com/a/33681975/1815624
+        // Thanks http://stackoverflow.com/a/33681975/1815624
         fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+            Log.e("TAG", "loading url->$url")
             view.loadUrl(url)
             return true
         }
