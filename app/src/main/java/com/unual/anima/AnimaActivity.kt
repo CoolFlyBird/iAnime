@@ -6,6 +6,8 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Window
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.unual.anima.adapter.AnimaVideosAdapter
 import com.unual.anima.base.BaseActivity
 import com.unual.anima.data.*
@@ -95,22 +97,41 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             Observable.just(htmlPage)
                     .subscribeOn(Schedulers.io())
                     .map { htmlPage ->
-                        val numPattern = "var sourceUrl =.+;".toRegex()
                         var url = ""
-                        for (matchResult in numPattern.findAll(htmlPage)) {
-                            url = matchResult.value
-                            println()
+
+                        val sourceUrl = """var sourceUrl =.+;"""
+                        Regex(sourceUrl).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
+                            var result = t.replace("var sourceUrl = ", "").replace(";", "").replace("\"", "").trim()
+                            Log.e("TAG", "sourceUrl->$result")
                         }
-                        var lines = arrayOf("http://jx.yylep.com/?url=", "http://api.wlzhan.com/sudu/?url=", "https://api.flvsp.com/?url=", " ", "http://wanhao.maoyun.cloud/1/mdparse/index.php?id=")
-//                        [ ],//line1
-//                        ["www.bilibili.com","bangumi.bilibili.com"],//line2
-//                        ["my.tv.sohu.com","tv.sohu.com","www.mgtv.com"],//line3
-//                        ["www.ikanfan.cn", "xin.tcpspc.com","110.80.136.9:2100", "acvideo.fun:2100","moe.kirikiri.tv","www.yylep.com","moe.kirikiri.cc","107.jp255.com","tbm.alicdn.com","jx.itaoju.top"],//line4
-//                        ["v.pptv.com"],//line5
-                        url = url.replace("var sourceUrl = \"", "").replace("\";", "")
-                        if (!url.endsWith(".mp4")) {
-                            url = lines[0].toString() + url
+
+                        val line = """var line = \[.+];"""
+                        Regex(line).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
+                            var result = t.replace("var line = ", "").replace(";", "").replace("\"", "").replace("[", "").replace("]", "").trim()
+                            var array = result.split(",")
+                            for (i in array) {
+                                System.out.println("array->$i")
+                            }
                         }
+
+                        val sourceLib = """var sourceLib =[\s\S]*?\n\]"""
+                        Regex(sourceLib).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
+                            var result = t.replace("var sourceLib =", "")
+                            val comment = """//[\s\S]*?\n"""//去掉以"//"开头的注释
+                            Regex(comment).findAll(t).toList().flatMap(MatchResult::groupValues).forEach { a ->
+                                result = result.replace(a, "")
+                            }
+                            result = result.trim()
+                            Log.e("TAG", "result->$result")
+                            val entity = Gson().fromJson<List<String>>(result, object : TypeToken<List<String>>() {}.type)
+                            for (i in entity) {
+                                Log.e("TAG", "i->$i")
+                                for (ii in entity) {
+                                    Log.e("TAG", "entity->$ii")
+                                }
+                            }
+                        }
+
                         url
                     }
                     .observeOn(AndroidSchedulers.mainThread())
