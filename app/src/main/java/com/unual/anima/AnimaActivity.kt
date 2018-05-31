@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Window
+import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.unual.anima.adapter.AnimaVideosAdapter
@@ -29,10 +30,8 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anima)
         val anima = intent.getSerializableExtra(Constant.KEY_INTENT) as Anima
-        if (anima != null) {
-            title = anima.name
-            animaInfo = AnimaInfo(anima)
-        }
+        title = anima.name
+        animaInfo = AnimaInfo(anima)
         refresh.setOnRefreshListener(this)
         adapter = AnimaVideosAdapter(R.layout.item_anima_list, { animaVideo ->
             getAnimaVideo(animaVideo.videoUrl, { url ->
@@ -40,15 +39,14 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                 var intent = Intent(this, WebPlayerActivity::class.java)
                 if (!url.isEmpty()) {
                     animaVideo.videoUrl = url
-                }
+                    Log.e("TAG", "load ->${animaVideo.videoUrl}")
 
-                if (url.endsWith(".mp4")) {
-                    intent = Intent(this, VideoPlayerActivity::class.java)
+                    if (url.endsWith(".mp4")) {
+                        intent = Intent(this, VideoPlayerActivity::class.java)
+                    }
+                    intent.putExtra(Constant.KEY_INTENT, animaVideo)
+                    startActivity(intent)
                 }
-                Log.e("TAG", "load ->${animaVideo.videoUrl}")
-//                var intent = Intent(this, WebPlayerActivity::class.java)
-                intent!!.putExtra(Constant.KEY_INTENT, animaVideo)
-                startActivity(intent)
             })
 
         })
@@ -99,40 +97,60 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                     .map { htmlPage ->
                         var url = ""
 
-                        val sourceUrl = """var sourceUrl =.+;"""
-                        Regex(sourceUrl).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
-                            var result = t.replace("var sourceUrl = ", "").replace(";", "").replace("\"", "").trim()
-                            Log.e("TAG", "sourceUrl->$result")
+                        var sourceUrl = ""
+                        Regex("""var sourceUrl =.+;""").findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
+                            sourceUrl = t.replace("var sourceUrl = ", "").replace(";", "").replace("\"", "").trim()
                         }
 
-                        val line = """var line = \[.+];"""
-                        Regex(line).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
+                        val line: ArrayList<String> = ArrayList()
+                        Regex("""var line = \[.+];""").findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
                             var result = t.replace("var line = ", "").replace(";", "").replace("\"", "").replace("[", "").replace("]", "").trim()
                             var array = result.split(",")
-                            for (i in array) {
-                                System.out.println("array->$i")
-                            }
+                            line += array
                         }
 
-                        val sourceLib = """var sourceLib =[\s\S]*?\n\]"""
-                        Regex(sourceLib).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
+                        var lib: ArrayList<ArrayList<String>> = ArrayList()
+                        Regex("""var sourceLib =[\s\S]*?\n\]""").findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
                             var result = t.replace("var sourceLib =", "")
                             val comment = """//[\s\S]*?\n"""//去掉以"//"开头的注释
                             Regex(comment).findAll(t).toList().flatMap(MatchResult::groupValues).forEach { a ->
                                 result = result.replace(a, "")
                             }
                             result = result.trim()
-                            Log.e("TAG", "result->$result")
-                            val entity = Gson().fromJson<List<String>>(result, object : TypeToken<List<String>>() {}.type)
-                            for (i in entity) {
-                                Log.e("TAG", "i->$i")
-                                for (ii in entity) {
-                                    Log.e("TAG", "entity->$ii")
+                            val entity = Gson().fromJson<List<List<String>>>(result, object : TypeToken<List<List<String>>>() {}.type)
+                            for (group in entity) {
+                                var g: ArrayList<String> = ArrayList()
+                                lib.add(g)
+                                if (group != null && !group.isEmpty()) {
+                                    for (i in group) {
+                                        g.add(i)
+                                    }
+                                } else {
+                                    g.add("")
                                 }
                             }
                         }
 
-                        url
+                        if (sourceUrl.endsWith(".mp4")) {
+                            url = sourceUrl
+                        } else {
+                            var sourceUrlHost = sourceUrl.split("/")[2]
+                            var index = 99
+                            for (i in 0 until lib.size) {
+                                for (j in 0 until lib[i].size) {
+                                    if (sourceUrlHost == lib[i][j]) {
+                                        index = i
+                                        break
+                                    }
+                                }
+                            }
+                            if (index != 99) {
+                                url = line[index] + sourceUrl
+                            } else {
+                                url = sourceUrl
+                            }
+                        }
+                        url.trim()
                     }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { url ->

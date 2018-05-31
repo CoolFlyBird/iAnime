@@ -22,7 +22,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_day_anima.*
 import org.greenrobot.eventbus.EventBus
-import java.util.ArrayList
+import java.util.*
 
 class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     private val fragments: ArrayList<DayAnimasFragment> = ArrayList()
@@ -48,6 +48,16 @@ class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         tabLayout.setupWithViewPager(viewPager)
         refresh.setOnRefreshListener(this)
         onRefresh()
+        selectToday()
+    }
+
+    private fun selectToday() {
+        val c = Calendar.getInstance()
+        c.time = Date()
+        val weekday = c.get(Calendar.DAY_OF_WEEK)
+        var index = weekday - 2
+        if (index < 0) index = 6
+        tabLayout.getTabAt(index)?.select()
     }
 
     override fun onRefresh() {

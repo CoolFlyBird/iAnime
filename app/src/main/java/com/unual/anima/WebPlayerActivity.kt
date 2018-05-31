@@ -1,9 +1,11 @@
 package com.unual.anima
 
+import android.net.http.SslError
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.webkit.SslErrorHandler
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.unual.anima.base.FullScreenActivity
@@ -32,7 +34,7 @@ class WebPlayerActivity : FullScreenActivity() {
         webChromeClient!!.setOnToggledFullscreen { fullscreen ->
             // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
             if (fullscreen) {
-                val attrs = getWindow().getAttributes()
+                val attrs = window.attributes
                 attrs.flags = attrs.flags or WindowManager.LayoutParams.FLAG_FULLSCREEN
                 attrs.flags = attrs.flags or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 window.attributes = attrs
@@ -60,11 +62,14 @@ class WebPlayerActivity : FullScreenActivity() {
 
     private inner class InsideWebViewClient : WebViewClient() {
         override// Force links to be opened inside WebView and not in Default Browser
-        // Thanks http://stackoverflow.com/a/33681975/1815624
+                // Thanks http://stackoverflow.com/a/33681975/1815624
         fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            Log.e("TAG", "loading url->$url")
             view.loadUrl(url)
             return true
+        }
+
+        override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
+            handler.proceed()
         }
     }
 

@@ -49,12 +49,12 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
         videoPlayer.isShowFullAnimation = false
         videoPlayer.isNeedLockFull = true
         videoPlayer.setVideoAllCallBack(this)
-        videoPlayer.setLockClickListener(LockClickListener { view, lock ->
+        videoPlayer.setLockClickListener { _, lock ->
             if (orientationUtils != null) {
                 //配合下方的onConfigurationChanged
                 orientationUtils.isEnable = !lock
             }
-        })
+        }
 //        next.setOnClickListener(View.OnClickListener { (detailPlayer.getCurrentPlayer() as ListGSYVideoPlayer).playNext() })
     }
 
