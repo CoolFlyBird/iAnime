@@ -79,7 +79,7 @@ public class VideoEnabledWebView extends WebView {
     @SuppressLint("SetJavaScriptEnabled")
     public void setWebChromeClient(WebChromeClient client) {
         getSettings().setJavaScriptEnabled(true);
-//        getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
+        getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
         if (client instanceof VideoEnabledWebChromeClient) {
             this.videoEnabledWebChromeClient = (VideoEnabledWebChromeClient) client;
         }

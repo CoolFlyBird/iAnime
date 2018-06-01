@@ -1,5 +1,6 @@
 package com.unual.anima.base
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -14,9 +15,18 @@ import org.greenrobot.eventbus.ThreadMode
  * Created by Administrator on 2018/5/29.
  */
 open class BaseActivity : AppCompatActivity() {
+    private val spf by lazy { getSharedPreferences(Constant.KEY_SPF, Context.MODE_PRIVATE) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
+    }
+
+    fun setValue(key: String, value: String) {
+        spf.edit().putString(key, value)
+    }
+
+    fun getValue(key: String): String {
+        return spf.getString(key, "")
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

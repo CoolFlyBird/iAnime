@@ -14,6 +14,11 @@ class AnimaVideosAdapter(res: Int, private val callback: (AnimaInfo.AnimaVideo) 
         with(item) {
             helper.setText(R.id.name, videoName)
             helper.itemView.tag = videoUrl
+            if (videoUrl.isEmpty()) {
+                helper.setText(R.id.check, "无链接")
+            } else {
+                helper.setText(R.id.check, "")
+            }
             helper.itemView.setOnClickListener { _ ->
                 callback.invoke(item)
             }

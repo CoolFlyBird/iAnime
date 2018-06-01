@@ -39,12 +39,14 @@ enum class WeekDayClass {
     abstract fun value(): String
 }
 
+class TypeUrl(var type: Int, var url: String)
+
 class Anima(var name: String, var url: String) : Serializable
 
 class AnimaInfo(var anima: Anima) {
     var list: ArrayList<AnimaVideo> = ArrayList()
 
-    class AnimaVideo(var videoName: String, var videoUrl: String):Serializable
+    class AnimaVideo(var videoName: String = "", var videoUrl: String = "", var checked: Boolean = false) : Serializable
 
     fun addAnimaVideo(video: AnimaVideo) {
         list.add(video)

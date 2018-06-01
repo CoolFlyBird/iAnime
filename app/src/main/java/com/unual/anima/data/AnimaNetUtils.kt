@@ -22,9 +22,9 @@ class Repository {
             val request = authorised.build()
             chain.proceed(request)
         }
-        val loginInterceptor = HttpLoggingInterceptor()
-        loginInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        builder.addInterceptor(loginInterceptor)
+//        val loginInterceptor = HttpLoggingInterceptor()
+//        loginInterceptor.level = HttpLoggingInterceptor.Level.BODY
+//        builder.addInterceptor(loginInterceptor)
         client = builder.build()
     }
 
