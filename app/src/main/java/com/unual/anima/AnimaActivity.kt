@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.unual.anima.adapter.AnimaVideosAdapter
@@ -48,13 +49,9 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
 //        var intent = Intent(this, WebPlayerActivity::class.java)
         if (!animaVideo.videoUrl.isEmpty()) {
-            if (animaVideo.videoUrl.endsWith(".mp4")) {
-                var intent = Intent(this, VideoPlayerActivity::class.java)
-                intent.putExtra(Constant.KEY_INTENT, animaVideo)
-                startActivity(intent)
-            } else {
-
-            }
+            var intent = Intent(this, VideoPlayerActivity::class.java)
+            intent.putExtra(Constant.KEY_INTENT, animaVideo)
+            startActivity(intent)
         }
     }
 
@@ -208,18 +205,34 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
      */
     private fun handleTypeUrl(typeUrl: TypeUrl, animaVideo: AnimaInfo.AnimaVideo, index: Int) {
         if (typeUrl.url.isEmpty()) {
-            animaVideo.videoUrl = ""; animaVideo.checked = true
-        }; when (typeUrl.type) { 0 -> {
-            animaVideo.videoUrl = typeUrl.url; animaVideo.checked = true; if (index == -1) openVideo(animaVideo) else adapter.notifyItemChanged(index)
+            animaVideo.videoUrl = ""
+            animaVideo.checked = true
         }
-            1 -> getUrlFromType1(typeUrl.url, { result ->
+        when (typeUrl.type) {
+            0 -> {
+                Log.e("TAG", "0 $index ${typeUrl.url}")
+                animaVideo.videoUrl = typeUrl.url
+                animaVideo.checked = true
+                if (index == -1) openVideo(animaVideo)
+                else adapter.notifyItemChanged(index)
+            }
+            1, 3 -> getUrlFromType1(typeUrl.url, { result ->
+                Log.e("TAG", "1 $index ${typeUrl.url} $result")
                 if (!result.isEmpty()) {
-                    animaVideo.videoUrl = result; animaVideo.checked = true
-                }; if (index == -1) openVideo(animaVideo) else adapter.notifyItemChanged(index)
-            })
-        }
-    } /*从播放另一个链接 获取视频 mp4*/
+                    animaVideo.videoUrl = result
+                    animaVideo.checked = true
+                }
 
+                if (index == -1) openVideo(animaVideo)
+                else adapter.notifyItemChanged(index)
+            })
+            else -> {
+                Log.e("TAG", "else $index ${typeUrl.type} - ${typeUrl.url} ")
+            }
+        }
+    }
+
+    /*从播放另一个链接 获取视频 mp4*/
     private fun getUrlFromType1(pageUrl: String, callback: (String) -> Unit) = Repository.instance.loadPage(pageUrl, { htmlPage ->
         Observable.just(htmlPage)
                 .subscribeOn(Schedulers.io())
