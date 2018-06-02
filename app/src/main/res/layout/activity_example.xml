@@ -5,6 +5,7 @@
     tools:context=".WebPlayerActivity">
 
     <!-- View that will be hidden when video goes fullscreen -->
+
     <RelativeLayout
         android:id="@+id/nonVideoLayout"
         android:layout_width="match_parent"
@@ -34,4 +35,14 @@
             android:layout_centerInParent="true"
             android:visibility="invisible" /> -->
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/switchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/lay_40"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="线路1"
+        android:textColor="@color/colorPrimary" />
 </RelativeLayout>

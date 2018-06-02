@@ -36,6 +36,7 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                 openVideo(animaVideo)
             } else {
                 getAnimaVideo(animaVideo.videoUrl, { typeUrl ->
+                    animaVideo.line.addAll(typeUrl.line)
                     handleTypeUrl(typeUrl, animaVideo, -1)
                 })
             }
@@ -48,7 +49,11 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     //打开视频
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
 //        var intent = Intent(this, WebPlayerActivity::class.java)
-        if (!animaVideo.videoUrl.isEmpty()) {
+        if (animaVideo.useWebPlayer && !animaVideo.videoUrl.isEmpty()) {
+            var intent = Intent(this, WebPlayerActivity::class.java)
+            intent.putExtra(Constant.KEY_INTENT, animaVideo)
+            startActivity(intent)
+        } else if (!animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, VideoPlayerActivity::class.java)
             intent.putExtra(Constant.KEY_INTENT, animaVideo)
             startActivity(intent)
@@ -74,6 +79,7 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map { animaVideo ->
                     getAnimaVideo(animaVideo.videoUrl, { typeUrl ->
+                        animaVideo.line.addAll(typeUrl.line)
                         handleTypeUrl(typeUrl, animaVideo, list.indexOf(animaVideo))
                     })
                 }.subscribe()
@@ -140,6 +146,7 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
         val line: ArrayList<String> = ArrayList()
         Regex("""var line = \[.+];""").findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
+            //            Log.e("TAG", "line->$t")
             var result = t.replace("var line = ", "").replace(";", "").replace("\"", "").replace("[", "").replace("]", "").trim()
             var array = result.split(",")
             line += array
@@ -166,7 +173,7 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                 }
             }
         }
-        var type = 0
+        var type = -1
         if (sourceUrl.endsWith(".mp4")) {
             url = sourceUrl
             type = 0
@@ -192,7 +199,7 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             }
         }
         url = url.trim()
-        return TypeUrl(type, url)
+        return TypeUrl(type, url, line)
     }
 
     //
@@ -207,27 +214,36 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         if (typeUrl.url.isEmpty()) {
             animaVideo.videoUrl = ""
             animaVideo.checked = true
+            animaVideo.checkType = typeUrl.type
         }
         when (typeUrl.type) {
+            -1 -> {
+                animaVideo.useWebPlayer = true
+//                animaVideo.videoUrl = "http://jx.yylep.com/?url=${typeUrl.url}"
+                animaVideo.videoUrl = typeUrl.url
+                animaVideo.checked = true
+                Log.e("TAG", "${animaVideo.videoUrl}")
+                if (index == -1) openVideo(animaVideo)
+                else adapter.notifyItemChanged(index)
+            }
             0 -> {
-                Log.e("TAG", "0 $index ${typeUrl.url}")
+                Log.e("TAG", "type:0 -> $index-${typeUrl.url}")
                 animaVideo.videoUrl = typeUrl.url
                 animaVideo.checked = true
                 if (index == -1) openVideo(animaVideo)
                 else adapter.notifyItemChanged(index)
             }
             1, 3 -> getUrlFromType1(typeUrl.url, { result ->
-                Log.e("TAG", "1 $index ${typeUrl.url} $result")
+                Log.e("TAG", "type:1,3 -> $index-${typeUrl.url} $result")
                 if (!result.isEmpty()) {
                     animaVideo.videoUrl = result
                     animaVideo.checked = true
                 }
-
                 if (index == -1) openVideo(animaVideo)
                 else adapter.notifyItemChanged(index)
             })
             else -> {
-                Log.e("TAG", "else $index ${typeUrl.type} - ${typeUrl.url} ")
+                Log.e("TAG", "type:${typeUrl.type} -> $index-${typeUrl.url}")
             }
         }
     }

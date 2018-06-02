@@ -56,13 +56,28 @@ class WebPlayerActivity : FullScreenActivity() {
         webView.webViewClient = InsideWebViewClient()
         // Navigate anywhere you want, but consider that this classes have only been tested on YouTube's mobile site
         val animaVideo = intent.getSerializableExtra(Constant.KEY_INTENT) as AnimaInfo.AnimaVideo
-        webView.loadUrl(animaVideo.videoUrl)
-
+        var index = animaVideo.checkType
+        switchButton.setOnClickListener {
+            index++
+            if (index < -1) index = 0
+            if (index > animaVideo.line.size) index = -1
+            if (index < animaVideo.line.size) {
+                if (index == -1) {
+                    switchButton.text = "原线路"
+                    Log.e("TAG", "load url - >${animaVideo.videoUrl}")
+                    webView.loadUrl(animaVideo.videoUrl)
+                } else {
+                    switchButton.text = "线路${(index + 1)}"
+                    Log.e("TAG", "load url - >${animaVideo.line[index] + animaVideo.videoUrl}")
+                    webView.loadUrl(animaVideo.line[index] + animaVideo.videoUrl)
+                }
+            }
+        }
     }
 
     private inner class InsideWebViewClient : WebViewClient() {
         override// Force links to be opened inside WebView and not in Default Browser
-                // Thanks http://stackoverflow.com/a/33681975/1815624
+        // Thanks http://stackoverflow.com/a/33681975/1815624
         fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             view.loadUrl(url)
             return true
