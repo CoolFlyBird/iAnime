@@ -1,56 +1,67 @@
 package com.unual.anima
 
+import android.content.Context
 import android.net.http.SslError
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.webkit.SslErrorHandler
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.unual.anima.base.FullScreenActivity
 import com.unual.anima.data.AnimaInfo
 import com.unual.anima.data.Constant
 import com.unual.anima.widget.VideoEnabledWebChromeClient
-import kotlinx.android.synthetic.main.activity_example.*
+//import kotlinx.android.synthetic.main.activity_example.*
+import kotlinx.android.synthetic.main.activity_web_player.*
 
 /**
  * Created by unual on 2018/5/29.
  */
 class WebPlayerActivity : FullScreenActivity() {
-    private var webChromeClient: VideoEnabledWebChromeClient? = null
+    private var webChromeClient: WebChromeClient? = null
+//    private var webChromeClient: VideoEnabledWebChromeClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_example)
-        val loadingView = layoutInflater.inflate(R.layout.view_loading_video, null) // Your own view, read class comments
-        webChromeClient = object : VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView) // See all available constructors...
-        {
-            // Subscribe to standard events, such as onProgressChanged()...
-            override fun onProgressChanged(view: WebView, progress: Int) {
-                // Your code...
-            }
-        }
-        webChromeClient!!.setOnToggledFullscreen { fullscreen ->
-            // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
-            if (fullscreen) {
-                val attrs = window.attributes
-                attrs.flags = attrs.flags or WindowManager.LayoutParams.FLAG_FULLSCREEN
-                attrs.flags = attrs.flags or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                window.attributes = attrs
-                if (android.os.Build.VERSION.SDK_INT >= 14) {
-                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE
-                }
-            } else {
-                val attrs = window.attributes
-                attrs.flags = attrs.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN.inv()
-                attrs.flags = attrs.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON.inv()
-                window.attributes = attrs
-                if (android.os.Build.VERSION.SDK_INT >= 14) {
-                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-                }
-            }
-        }
+        setContentView(R.layout.activity_web_player)
+//        setContentView(R.layout.activity_example)
+//        val loadingView = layoutInflater.inflate(R.layout.view_loading_video, null) // Your own view, read class comments
+//        webChromeClient = object : VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView) // See all available constructors...
+//        {
+//            // Subscribe to standard events, such as onProgressChanged()...
+//            override fun onProgressChanged(view: WebView, progress: Int) {
+//                super.onProgressChanged(view, progress)
+//                // Your code...
+//            }
+//        }
+//        webChromeClient!!.setOnToggledFullscreen { fullscreen ->
+//            // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
+//            if (fullscreen) {
+//                val attrs = window.attributes
+//                attrs.flags = attrs.flags or WindowManager.LayoutParams.FLAG_FULLSCREEN
+//                attrs.flags = attrs.flags or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+//                window.attributes = attrs
+//                if (android.os.Build.VERSION.SDK_INT >= 14) {
+//                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                }
+//            } else {
+//                val attrs = window.attributes
+//                attrs.flags = attrs.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN.inv()
+//                attrs.flags = attrs.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON.inv()
+//                window.attributes = attrs
+//                if (android.os.Build.VERSION.SDK_INT >= 14) {
+//                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+//                }
+//            }
+//        }
+        webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
+        webView.settings.setAppCacheEnabled(true)
+//        webView.settings.userAgentString = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
+
         webView.webChromeClient = webChromeClient
         // Call private class InsideWebViewClient
         webView.webViewClient = InsideWebViewClient()
@@ -77,7 +88,7 @@ class WebPlayerActivity : FullScreenActivity() {
 
     private inner class InsideWebViewClient : WebViewClient() {
         override// Force links to be opened inside WebView and not in Default Browser
-        // Thanks http://stackoverflow.com/a/33681975/1815624
+                // Thanks http://stackoverflow.com/a/33681975/1815624
         fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             view.loadUrl(url)
             return true
@@ -85,6 +96,10 @@ class WebPlayerActivity : FullScreenActivity() {
 
         override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
             handler.proceed()
+        }
+
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
         }
     }
 

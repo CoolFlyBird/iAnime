@@ -49,6 +49,7 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     //打开视频
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
 //        var intent = Intent(this, WebPlayerActivity::class.java)
+        Log.e("TAG", "open in web${animaVideo.useWebPlayer} - ${animaVideo.videoUrl} is {$animaVideo.videoUrl.isEmpty()}")
         if (animaVideo.useWebPlayer && !animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, WebPlayerActivity::class.java)
             intent.putExtra(Constant.KEY_INTENT, animaVideo)
@@ -244,6 +245,12 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             })
             else -> {
                 Log.e("TAG", "type:${typeUrl.type} -> $index-${typeUrl.url}")
+                if (!typeUrl.url.isEmpty()) {
+                    animaVideo.videoUrl = typeUrl.url
+                    animaVideo.checked = true
+                    animaVideo.useWebPlayer = true
+                }
+                if (index == -1) openVideo(animaVideo)
             }
         }
     }
