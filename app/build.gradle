@@ -44,9 +44,12 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.7.1'
 
-    implementation('com.shuyu:gsyVideoPlayer-java:5.0.0-beta')
-            { exclude group: 'com.android.support' }
-    implementation 'com.shuyu:gsyVideoPlayer-arm64:5.0.0-beta'
+//    implementation('com.shuyu:gsyVideoPlayer-java:5.0.0-beta')
+//            { exclude group: 'com.android.support' }
+//    implementation 'com.shuyu:gsyVideoPlayer-arm64:5.0.0-beta'
+
+    implementation project(':videoplayer:gsyVideoPlayer-java')
+    implementation project(':videoplayer:gsyVideoPlayer-armv64')
 
     implementation project(':JsoupXpath')
 

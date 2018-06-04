@@ -32,6 +32,9 @@ allprojects {
         minSdkVersion = 19
         targetSdkVersion = 26
         compileSdkVersion = 26
+        ijkplayer = "0.8.8"
+        exo_player2 = '2.8.0'
+        transitionseverywhere = '1.7.0'
     }
 }
 

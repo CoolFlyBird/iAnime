@@ -1,1 +1,1 @@
-include ':app', ':JsoupXpath', ':videoplayer'
+include ':app', ':JsoupXpath', ':videoplayer:gsyVideoPlayer-java', ':videoplayer:gsyVideoPlayer-armv64', ':videoplayer:gsyvideoplayer-androidvideocache', ':videoplayer:gsyvideoplayer-exo2'
