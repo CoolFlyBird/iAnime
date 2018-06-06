@@ -476,7 +476,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
 
         setViewShowState(mTopContainer, VISIBLE);
         setViewShowState(mBottomContainer, VISIBLE);
-        setViewShowState(mStartButton, VISIBLE);
+//        setViewShowState(mStartButton, VISIBLE);
         setViewShowState(mLoadingProgressBar, INVISIBLE);
         setViewShowState(mThumbImageViewLayout, INVISIBLE);
         setViewShowState(mBottomProgressBar, INVISIBLE);
@@ -494,7 +494,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
 
         setViewShowState(mTopContainer, VISIBLE);
         setViewShowState(mBottomContainer, VISIBLE);
-        setViewShowState(mStartButton, VISIBLE);
+//        setViewShowState(mStartButton, VISIBLE);
         setViewShowState(mLoadingProgressBar, INVISIBLE);
         setViewShowState(mThumbImageViewLayout, INVISIBLE);
         setViewShowState(mBottomProgressBar, INVISIBLE);
@@ -513,7 +513,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
 
         setViewShowState(mTopContainer, VISIBLE);
         setViewShowState(mBottomContainer, VISIBLE);
-        setViewShowState(mStartButton, INVISIBLE);
+//        setViewShowState(mStartButton, INVISIBLE);
         setViewShowState(mLoadingProgressBar, VISIBLE);
         setViewShowState(mThumbImageViewLayout, INVISIBLE);
         setViewShowState(mBottomProgressBar, INVISIBLE);
@@ -533,7 +533,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
 
         setViewShowState(mTopContainer, VISIBLE);
         setViewShowState(mBottomContainer, VISIBLE);
-        setViewShowState(mStartButton, VISIBLE);
+//        setViewShowState(mStartButton, VISIBLE);
         setViewShowState(mLoadingProgressBar, INVISIBLE);
         setViewShowState(mThumbImageViewLayout, VISIBLE);
         setViewShowState(mBottomProgressBar, INVISIBLE);
@@ -551,7 +551,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
 
         setViewShowState(mTopContainer, INVISIBLE);
         setViewShowState(mBottomContainer, INVISIBLE);
-        setViewShowState(mStartButton, VISIBLE);
+//        setViewShowState(mStartButton, VISIBLE);
         setViewShowState(mLoadingProgressBar, INVISIBLE);
         setViewShowState(mThumbImageViewLayout, INVISIBLE);
         setViewShowState(mBottomProgressBar, INVISIBLE);
@@ -715,7 +715,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
 
         setViewShowState(mTopContainer, INVISIBLE);
         setViewShowState(mBottomContainer, INVISIBLE);
-        setViewShowState(mStartButton, VISIBLE);
+//        setViewShowState(mStartButton, VISIBLE);
         setViewShowState(mLoadingProgressBar, INVISIBLE);
         setViewShowState(mThumbImageViewLayout, VISIBLE);
         setViewShowState(mBottomProgressBar, VISIBLE);
@@ -731,6 +731,49 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
      * 定义开始按键显示
      */
     protected void updateStartImage() {
+        if (mController != null) {
+            if (mController instanceof ENPlayView) {
+                ENPlayView enPlayView = (ENPlayView) mController;
+                if (mCurrentState == CURRENT_STATE_PLAYING) {
+                    enPlayView.play();
+                } else if (mCurrentState == CURRENT_STATE_ERROR) {
+                    enPlayView.pause();
+                } else {
+                    enPlayView.pause();
+                }
+            }
+        } else if (mController instanceof ImageView) {
+            ImageView imageView = (ImageView) mController;
+            if (mCurrentState == CURRENT_STATE_PLAYING) {
+                imageView.setImageResource(R.drawable.video_click_pause_selector);
+            } else if (mCurrentState == CURRENT_STATE_ERROR) {
+                imageView.setImageResource(R.drawable.video_click_error_selector);
+            } else {
+                imageView.setImageResource(R.drawable.video_click_play_selector);
+            }
+        }
+
+        if (mController instanceof ENPlayView) {
+            ENPlayView enPlayView = (ENPlayView) mController;
+            enPlayView.setDuration(100);
+            if (mCurrentState == CURRENT_STATE_PLAYING) {
+                enPlayView.play();
+            } else if (mCurrentState == CURRENT_STATE_ERROR) {
+                enPlayView.pause();
+            } else {
+                enPlayView.pause();
+            }
+        } else if (mController instanceof ImageView) {
+            ImageView imageView = (ImageView) mController;
+            if (mCurrentState == CURRENT_STATE_PLAYING) {
+                imageView.setImageResource(R.drawable.video_click_pause_selector);
+            } else if (mCurrentState == CURRENT_STATE_ERROR) {
+                imageView.setImageResource(R.drawable.video_click_error_selector);
+            } else {
+                imageView.setImageResource(R.drawable.video_click_play_selector);
+            }
+        }
+
         if (mStartButton instanceof ENPlayView) {
             ENPlayView enPlayView = (ENPlayView) mStartButton;
             enPlayView.setDuration(500);

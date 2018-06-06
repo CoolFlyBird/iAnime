@@ -120,6 +120,19 @@ public class GSYADVideoPlayer extends StandardGSYVideoPlayer {
                 }
             }
         }
+
+        if (mController != null) {
+            if (mController instanceof ImageView) {
+                ImageView imageView = (ImageView) mController;
+                if (mCurrentState == CURRENT_STATE_PLAYING) {
+                    imageView.setImageResource(R.drawable.empty_drawable);
+                } else if (mCurrentState == CURRENT_STATE_ERROR) {
+                    imageView.setImageResource(R.drawable.video_click_error_selector);
+                } else {
+                    imageView.setImageResource(R.drawable.empty_drawable);
+                }
+            }
+        }
     }
 
 

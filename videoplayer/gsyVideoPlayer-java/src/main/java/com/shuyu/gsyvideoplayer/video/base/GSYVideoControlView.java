@@ -138,6 +138,9 @@ public abstract class GSYVideoControlView extends GSYVideoView implements View.O
     //loading view
     protected View mLoadingProgressBar;
 
+    //播放按键
+    protected View mController;
+
     //进度条
     protected SeekBar mProgressBar;
 
@@ -205,6 +208,7 @@ public abstract class GSYVideoControlView extends GSYVideoView implements View.O
     protected void init(Context context) {
         super.init(context);
         mStartButton = findViewById(R.id.start);
+        mController = findViewById(R.id.controller);
         mTitleTextView = (TextView) findViewById(R.id.title);
         mBackButton = (ImageView) findViewById(R.id.back);
         mFullscreenButton = (ImageView) findViewById(R.id.fullscreen);
@@ -225,6 +229,10 @@ public abstract class GSYVideoControlView extends GSYVideoView implements View.O
 
         if (mStartButton != null) {
             mStartButton.setOnClickListener(this);
+        }
+
+        if (mController != null) {
+            mController.setOnClickListener(this);
         }
 
         if (mFullscreenButton != null) {
@@ -379,7 +387,7 @@ public abstract class GSYVideoControlView extends GSYVideoView implements View.O
         if (mHideKey && mIfCurrentIsFullscreen) {
             hideNavKey(mContext);
         }
-        if (i == R.id.start) {
+        if (i == R.id.start || i == R.id.controller) {
             clickStartIcon();
         } else if (i == R.id.surface_container && mCurrentState == CURRENT_STATE_ERROR) {
             if (mVideoAllCallBack != null) {

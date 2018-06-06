@@ -120,8 +120,8 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         val jxDocument = JXDocument.create(htmlPage)
         val namePath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/em/text()"
         val urlPath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/@href"
-        val nameResult = jxDocument.sel(namePath)
-        val urlResult = jxDocument.sel(urlPath)
+        var nameResult = jxDocument.sel(namePath)
+        var urlResult = jxDocument.sel(urlPath)
         val result: ArrayList<AnimaInfo.AnimaVideo> = ArrayList()
         for (i in 0 until nameResult.size) {
             var name = nameResult[i].toString()
@@ -132,8 +132,29 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             }
             name = name.trim()
             var url = urlResult[i].toString()
+            Log.e("TAG", "$name -> $url")
             result.add(AnimaInfo.AnimaVideo(name, url))
         }
+        Log.e("TAG", "result.size -> ${result.size}")
+        if (result.size == 0) {
+            val namePath = "//h3[@class=\"box area\"]/li/a/div/p/text()"
+            val urlPath = "//h3[@class=\"box area\"]/li/a/@href"
+            nameResult = jxDocument.sel(namePath)
+            urlResult = jxDocument.sel(urlPath)
+            for (i in 0 until urlResult.size) {
+                var name = nameResult[2 * i].toString()
+                for (ii in nameResult[2 * i].toString().split(" ")) {
+                    if (animaInfo.anima.name.contains(ii)) {
+                        name = name.replace(ii, "")
+                    }
+                }
+                name = nameResult[2 * i + 1].toString().trim() + " " + name.trim()
+                var url = urlResult[i].toString()
+                Log.e("TAG", "$name -> $url")
+                result.add(AnimaInfo.AnimaVideo(name, url))
+            }
+        }
+        Log.e("TAG", "result.sizea -> ${result.size}")
         return result
     }
 

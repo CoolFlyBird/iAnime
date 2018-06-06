@@ -42,5 +42,17 @@ public class NormalGSYVideoPlayer extends StandardGSYVideoPlayer {
                 imageView.setImageResource(R.drawable.video_click_play_selector);
             }
         }
+        if (mController != null) {
+            if (mController instanceof ImageView) {
+                ImageView imageView = (ImageView) mController;
+                if (mCurrentState == CURRENT_STATE_PLAYING) {
+                    imageView.setImageResource(R.drawable.video_click_pause_selector);
+                } else if (mCurrentState == CURRENT_STATE_ERROR) {
+                    imageView.setImageResource(R.drawable.video_click_play_selector);
+                } else {
+                    imageView.setImageResource(R.drawable.video_click_play_selector);
+                }
+            }
+        }
     }
 }
