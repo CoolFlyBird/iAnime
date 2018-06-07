@@ -1,5 +1,6 @@
 package com.unual.anima
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -13,8 +14,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.shuyu.gsyvideoplayer.GSYBaseActivityDetail
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
+import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
+import com.shuyu.gsyvideoplayer.listener.GSYVideoProgressListener
 import com.shuyu.gsyvideoplayer.listener.LockClickListener
 import com.shuyu.gsyvideoplayer.model.GSYVideoModel
+import com.shuyu.gsyvideoplayer.utils.Debuger
 import com.shuyu.gsyvideoplayer.video.ListGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
@@ -25,12 +29,18 @@ import kotlinx.android.synthetic.main.activity_video_player.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pub.devrel.easypermissions.EasyPermissions
 import java.util.ArrayList
 
 /**
  * Created by Administrator on 2018/5/30.
  */
 class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
+    private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val spf by lazy { getSharedPreferences(Constant.KEY_SPF, Context.MODE_PRIVATE) }
+    private var animaVideo: AnimaInfo.AnimaVideo? = null
+    private var animaInfo: AnimaInfo? = null
+
     val flag = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -38,13 +48,24 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
             or View.SYSTEM_UI_FLAG_FULLSCREEN
             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
 
+    fun setValue(key: String, value: String) {
+        if (!EasyPermissions.hasPermissions(this, *parm)) return
+        spf.edit().putString(key, value)?.commit()
+    }
+
+    fun getValue(key: String): String {
+        if (!EasyPermissions.hasPermissions(this, *parm)) return ""
+        return spf.getString(key, "")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_player)
         initVideo()
-        var animaVideo = intent.getSerializableExtra(Constant.KEY_INTENT) as AnimaInfo.AnimaVideo
+        animaVideo = intent.getSerializableExtra(Constant.KEY_INTENT) as AnimaInfo.AnimaVideo
+        animaInfo = intent.getSerializableExtra(Constant.KEY_INTENT_EXT) as AnimaInfo
         val urls = ArrayList<GSYVideoModel>()
-        urls.add(GSYVideoModel(animaVideo.videoUrl, animaVideo.videoName))
+        urls.add(GSYVideoModel(animaVideo?.videoUrl, animaVideo?.videoName))
         videoPlayer.setUp(urls, true, 0)
         resolveNormalVideoUI()
 
@@ -63,13 +84,14 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
         }
         var time = 0L
         try {
-            time = intent.getStringExtra(Constant.KEY_INTENT_EXT).toLong()
+            Log.e("TAG", "${animaInfo?.anima?.name + "_" + animaVideo?.videoName}")
+            time = getValue(animaInfo?.anima?.name + "_" + animaVideo?.videoName).toLong()
         } catch (e: Exception) {
-            Log.e("TAG", "Exception -> ${e.message}")
+            Log.e("TAG", "Exception -> $time")
         }
-        videoPlayer.gsyVideoManager.seekTo(time)
+        videoPlayer.seekOnStart = time
 
-        loadCover(videoPlayer, animaVideo.videoUrl)
+        loadCover(videoPlayer, animaVideo?.videoUrl ?: "")
 //        next.setOnClickListener(View.OnClickListener { (detailPlayer.getCurrentPlayer() as ListGSYVideoPlayer).playNext() })
     }
 
@@ -135,9 +157,7 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.e("TAG", "current:" + videoPlayer.gsyVideoManager.currentPosition)
-        val intent = Intent()
-        intent.putExtra(Constant.KEY_INTENT, "${videoPlayer.gsyVideoManager.currentPosition}")
-        setResult(Activity.RESULT_OK, intent)
+        setValue(animaInfo?.anima?.name + "_" + animaVideo?.videoName, videoPlayer.gsyVideoManager.currentPosition.toString())
     }
+
 }

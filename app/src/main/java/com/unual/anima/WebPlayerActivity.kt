@@ -61,7 +61,7 @@ class WebPlayerActivity : FullScreenActivity() {
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         webView.settings.setAppCacheEnabled(true)
-//        webView.settings.userAgentString = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
+        webView.settings.userAgentString = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
 
         webView.webChromeClient = webChromeClient
         // Call private class InsideWebViewClient

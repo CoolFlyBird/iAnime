@@ -50,14 +50,6 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         onRefresh()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.e("TAG", "${anima.name}_$playName ${data?.extras?.getString(Constant.KEY_INTENT)} ${data.toString()}")
-        if (resultCode == Activity.RESULT_OK) {
-            setValue("${anima.name}_$playName", data?.extras?.getString(Constant.KEY_INTENT) ?: "")
-        }
-    }
-
     //打开视频
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
         playName = animaVideo.videoName
@@ -70,8 +62,8 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         } else if (!animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, VideoPlayerActivity::class.java)
             intent.putExtra(Constant.KEY_INTENT, animaVideo)
-            intent.putExtra(Constant.KEY_INTENT_EXT, getValue("${anima.name}_${animaVideo.videoName}"))
-            startActivityForResult(intent, Constant.REQUEST_CODE)
+            intent.putExtra(Constant.KEY_INTENT_EXT, animaInfo)
+            startActivity(intent)
         }
     }
 

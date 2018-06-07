@@ -43,7 +43,7 @@ class TypeUrl(var type: Int, var url: String, var line: List<String> = ArrayList
 
 class Anima(var name: String, var url: String, var record: String = "") : Serializable
 
-class AnimaInfo(var anima: Anima) {
+class AnimaInfo(var anima: Anima) : Serializable {
     var list: ArrayList<AnimaVideo> = ArrayList()
 
     class AnimaVideo(var videoName: String = "", var videoUrl: String = "", var checked: Boolean = false, var checkType: Int = -1

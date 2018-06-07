@@ -11,6 +11,6 @@ object Constant {
     const val KEY_INTENT_EXT = "key_intent_EXT"
 
     const val DEFAULT = "record_"
-    const val LAST = "last"
+    const val LAST = "_last"
     const val KEY_SPF_RECORD = "record_"
 }
