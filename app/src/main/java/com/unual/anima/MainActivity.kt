@@ -1,6 +1,8 @@
 package com.unual.anima
 
+import android.Manifest
 import android.os.Bundle
+import android.provider.SyncStateContract
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -12,7 +14,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.unual.anima.adapter.DayAnimasAdapter
 import com.unual.anima.base.BaseActivity
+import com.unual.anima.base.Utils
 import com.unual.anima.data.Anima
+import com.unual.anima.data.Constant
 import com.unual.anima.data.Repository
 import com.unual.anima.data.WeekDayClass
 import com.unual.jsoupxpath.JXDocument
@@ -22,9 +26,13 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_day_anima.*
 import org.greenrobot.eventbus.EventBus
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 
 class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
+    private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+
     private val fragments: ArrayList<DayAnimasFragment> = ArrayList()
     private var week = ArrayList<WeekDayClass>()
 
@@ -40,6 +48,7 @@ class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkPermissions()
         setContentView(R.layout.activity_main)
         for (i in 0 until week.size) {
             fragments.add(DayAnimasFragment())
@@ -49,6 +58,13 @@ class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         refresh.setOnRefreshListener(this)
         onRefresh()
         selectToday()
+    }
+
+    @AfterPermissionGranted(Constant.REQUEST_CODE)
+    fun checkPermissions() {
+        if (!EasyPermissions.hasPermissions(this, *parm)) {
+            EasyPermissions.requestPermissions(this, getString(R.string.setting_request), Constant.REQUEST_CODE, *parm)
+        }
     }
 
     private fun selectToday() {
@@ -95,6 +111,15 @@ class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                         result.add(anima)
                     }
                     result
+                }
+                .map { list ->
+                    for (anima in list) {
+                        var value = getValue(anima.name + Constant.LAST)
+                        if (!value.isEmpty()) {
+                            anima.record = value
+                        }
+                    }
+                    list
                 }
                 .collect(
                         // 动漫列表(一周列表) -> 动漫列表(一天列表)

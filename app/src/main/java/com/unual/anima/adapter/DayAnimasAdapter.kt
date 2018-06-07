@@ -13,6 +13,7 @@ class DayAnimasAdapter(res: Int, private val callback: (Anima) -> Unit) : BaseQu
     override fun convert(helper: BaseViewHolder, item: Anima) {
         with(item) {
             helper.setText(R.id.name, name)
+            helper.setText(R.id.record, record)
             helper.itemView.tag = url
             helper.itemView.setOnClickListener { _ ->
                 callback.invoke(item)

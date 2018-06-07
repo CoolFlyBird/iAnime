@@ -1,5 +1,6 @@
 package com.unual.anima
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -9,13 +10,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.unual.anima.adapter.AnimaVideosAdapter
 import com.unual.anima.base.BaseActivity
+import com.unual.anima.base.Utils
 import com.unual.anima.data.*
 import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_anima.*
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by Administrator on 2018/5/29.
@@ -24,10 +26,12 @@ import java.util.ArrayList
 class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var adapter: AnimaVideosAdapter
     lateinit var animaInfo: AnimaInfo
+    lateinit var anima: Anima
+    lateinit var playName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anima)
-        val anima = intent.getSerializableExtra(Constant.KEY_INTENT) as Anima
+        anima = intent.getSerializableExtra(Constant.KEY_INTENT) as Anima
         title = anima.name
         animaInfo = AnimaInfo(anima)
         refresh.setOnRefreshListener(this)
@@ -46,10 +50,19 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         onRefresh()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.e("TAG", "${anima.name}_$playName ${data?.extras?.getString(Constant.KEY_INTENT)} ${data.toString()}")
+        if (resultCode == Activity.RESULT_OK) {
+            setValue("${anima.name}_$playName", data?.extras?.getString(Constant.KEY_INTENT) ?: "")
+        }
+    }
+
     //打开视频
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
-//        var intent = Intent(this, WebPlayerActivity::class.java)
+        playName = animaVideo.videoName
         Log.e("TAG", "open in web${animaVideo.useWebPlayer} - ${animaVideo.videoUrl} is {$animaVideo.videoUrl.isEmpty()}")
+        setValue(anima.name + Constant.LAST, "${Utils.format(Date(), "MM.dd")}·${animaVideo.videoName}")
         if (animaVideo.useWebPlayer && !animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, WebPlayerActivity::class.java)
             intent.putExtra(Constant.KEY_INTENT, animaVideo)
@@ -57,7 +70,8 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         } else if (!animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, VideoPlayerActivity::class.java)
             intent.putExtra(Constant.KEY_INTENT, animaVideo)
-            startActivity(intent)
+            intent.putExtra(Constant.KEY_INTENT_EXT, getValue("${anima.name}_${animaVideo.videoName}"))
+            startActivityForResult(intent, Constant.REQUEST_CODE)
         }
     }
 

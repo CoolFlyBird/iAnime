@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Anima</string>
+    <string name="setting_request">请授予相应的权限</string>
 </resources>

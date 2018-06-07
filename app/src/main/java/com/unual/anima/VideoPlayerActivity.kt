@@ -1,5 +1,9 @@
 package com.unual.anima
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -14,9 +18,13 @@ import com.shuyu.gsyvideoplayer.model.GSYVideoModel
 import com.shuyu.gsyvideoplayer.video.ListGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
+import com.unual.anima.data.Anima
 import com.unual.anima.data.AnimaInfo
 import com.unual.anima.data.Constant
 import kotlinx.android.synthetic.main.activity_video_player.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.ArrayList
 
 /**
@@ -38,8 +46,6 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
         val urls = ArrayList<GSYVideoModel>()
         urls.add(GSYVideoModel(animaVideo.videoUrl, animaVideo.videoName))
         videoPlayer.setUp(urls, true, 0)
-        loadCover(videoPlayer, animaVideo.videoUrl)
-
         resolveNormalVideoUI()
 
         videoPlayer.setIsTouchWiget(true)
@@ -55,6 +61,15 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
                 orientationUtils.isEnable = !lock
             }
         }
+        var time = 0L
+        try {
+            time = intent.getStringExtra(Constant.KEY_INTENT_EXT).toLong()
+        } catch (e: Exception) {
+            Log.e("TAG", "Exception -> ${e.message}")
+        }
+        videoPlayer.gsyVideoManager.seekTo(time)
+
+        loadCover(videoPlayer, animaVideo.videoUrl)
 //        next.setOnClickListener(View.OnClickListener { (detailPlayer.getCurrentPlayer() as ListGSYVideoPlayer).playNext() })
     }
 
@@ -116,5 +131,13 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
 
     private fun fullScreen() {
         window.decorView.systemUiVisibility = flag
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("TAG", "current:" + videoPlayer.gsyVideoManager.currentPosition)
+        val intent = Intent()
+        intent.putExtra(Constant.KEY_INTENT, "${videoPlayer.gsyVideoManager.currentPosition}")
+        setResult(Activity.RESULT_OK, intent)
     }
 }

@@ -10,6 +10,7 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.unual.anima.base.BaseActivity
 import com.unual.anima.base.FullScreenActivity
 import com.unual.anima.data.AnimaInfo
 import com.unual.anima.data.Constant
@@ -88,7 +89,7 @@ class WebPlayerActivity : FullScreenActivity() {
 
     private inner class InsideWebViewClient : WebViewClient() {
         override// Force links to be opened inside WebView and not in Default Browser
-                // Thanks http://stackoverflow.com/a/33681975/1815624
+        // Thanks http://stackoverflow.com/a/33681975/1815624
         fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             view.loadUrl(url)
             return true

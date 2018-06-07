@@ -41,7 +41,7 @@ enum class WeekDayClass {
 
 class TypeUrl(var type: Int, var url: String, var line: List<String> = ArrayList())
 
-class Anima(var name: String, var url: String) : Serializable
+class Anima(var name: String, var url: String, var record: String = "") : Serializable
 
 class AnimaInfo(var anima: Anima) {
     var list: ArrayList<AnimaVideo> = ArrayList()

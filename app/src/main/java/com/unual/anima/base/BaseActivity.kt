@@ -1,7 +1,9 @@
 package com.unual.anima.base
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.unual.anima.AnimaActivity
@@ -10,11 +12,13 @@ import com.unual.anima.data.Constant
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pub.devrel.easypermissions.EasyPermissions
 
 /**
  * Created by Administrator on 2018/5/29.
  */
 open class BaseActivity : AppCompatActivity() {
+    private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
     private val spf by lazy { getSharedPreferences(Constant.KEY_SPF, Context.MODE_PRIVATE) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,10 +26,12 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun setValue(key: String, value: String) {
-        spf.edit().putString(key, value)
+        if (!EasyPermissions.hasPermissions(this, *parm)) return
+        spf.edit().putString(key, value)?.commit()
     }
 
     fun getValue(key: String): String {
+        if (!EasyPermissions.hasPermissions(this, *parm)) return ""
         return spf.getString(key, "")
     }
 

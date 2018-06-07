@@ -22,7 +22,10 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:multidex:1.0.1" // 多dex配置
+    // 多dex配置
+    implementation "com.android.support:multidex:1.0.1"
+    // 权限
+    implementation 'pub.devrel:easypermissions:1.2.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
