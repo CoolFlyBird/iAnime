@@ -1,4 +1,4 @@
-package com.unual.anima.widget
+package com.unual.anime.widget
 
 import android.content.Context
 import android.support.v4.widget.SwipeRefreshLayout

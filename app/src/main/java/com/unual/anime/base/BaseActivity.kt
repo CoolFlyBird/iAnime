@@ -1,14 +1,13 @@
-package com.unual.anima.base
+package com.unual.anime.base
 
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.unual.anima.AnimaActivity
-import com.unual.anima.data.Anima
-import com.unual.anima.data.Constant
+import com.unual.anime.AnimeActivity
+import com.unual.anime.data.Anima
+import com.unual.anime.data.Constant
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -37,7 +36,7 @@ open class BaseActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(anima: Anima) {
-        val intent = Intent(this, AnimaActivity::class.java)
+        val intent = Intent(this, AnimeActivity::class.java)
         intent.putExtra(Constant.KEY_INTENT, anima)
         startActivity(intent)
     }

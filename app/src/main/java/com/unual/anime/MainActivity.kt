@@ -1,8 +1,7 @@
-package com.unual.anima
+package com.unual.anime
 
 import android.Manifest
 import android.os.Bundle
-import android.provider.SyncStateContract
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -12,19 +11,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.unual.anima.adapter.DayAnimasAdapter
-import com.unual.anima.base.BaseActivity
-import com.unual.anima.base.Utils
-import com.unual.anima.data.Anima
-import com.unual.anima.data.Constant
-import com.unual.anima.data.Repository
-import com.unual.anima.data.WeekDayClass
+import com.unual.anime.adapter.DayAnimeAdapter
+import com.unual.anime.base.BaseActivity
+import com.unual.anime.data.Anima
+import com.unual.anime.data.Constant
+import com.unual.anime.data.Repository
+import com.unual.anime.data.WeekDayClass
 import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_day_anima.*
+import kotlinx.android.synthetic.main.fragment_day_anime.*
 import org.greenrobot.eventbus.EventBus
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -151,7 +149,7 @@ class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         private var animas: ArrayList<Anima> = ArrayList()
-        private var adapter: DayAnimasAdapter? = null
+        private var adapter: DayAnimeAdapter? = null
 
         fun setValue(data: List<Anima>) {
             animas.clear()
@@ -161,13 +159,13 @@ class MainActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            return inflater.inflate(R.layout.fragment_day_anima, container, false)
+            return inflater.inflate(R.layout.fragment_day_anime, container, false)
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             recycler?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = DayAnimasAdapter(R.layout.item_anima_list, { item ->
+            adapter = DayAnimeAdapter(R.layout.item_anime_list, { item ->
                 EventBus.getDefault().post(item)
             })
             adapter?.setNewData(animas)

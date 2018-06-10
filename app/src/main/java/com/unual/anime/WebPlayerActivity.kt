@@ -1,20 +1,15 @@
-package com.unual.anima
+package com.unual.anime
 
-import android.content.Context
 import android.net.http.SslError
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.WindowManager
 import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.unual.anima.base.BaseActivity
-import com.unual.anima.base.FullScreenActivity
-import com.unual.anima.data.AnimaInfo
-import com.unual.anima.data.Constant
-import com.unual.anima.widget.VideoEnabledWebChromeClient
+import com.unual.anime.base.FullScreenActivity
+import com.unual.anime.data.AnimaInfo
+import com.unual.anime.data.Constant
 //import kotlinx.android.synthetic.main.activity_example.*
 import kotlinx.android.synthetic.main.activity_web_player.*
 

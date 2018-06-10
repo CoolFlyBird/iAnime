@@ -1,6 +1,5 @@
-package com.unual.anima
+package com.unual.anime
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -8,34 +7,34 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.unual.anima.adapter.AnimaVideosAdapter
-import com.unual.anima.base.BaseActivity
-import com.unual.anima.base.Utils
-import com.unual.anima.data.*
+import com.unual.anime.adapter.AnimeVideosAdapter
+import com.unual.anime.base.BaseActivity
+import com.unual.anime.base.Utils
+import com.unual.anime.data.*
 import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_anima.*
+import kotlinx.android.synthetic.main.activity_anime.*
 import java.util.*
 
 /**
  * Created by Administrator on 2018/5/29.
  */
 
-class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
-    lateinit var adapter: AnimaVideosAdapter
+class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
+    lateinit var adapter: AnimeVideosAdapter
     lateinit var animaInfo: AnimaInfo
     lateinit var anima: Anima
     lateinit var playName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_anima)
+        setContentView(R.layout.activity_anime)
         anima = intent.getSerializableExtra(Constant.KEY_INTENT) as Anima
         title = anima.name
         animaInfo = AnimaInfo(anima)
         refresh.setOnRefreshListener(this)
-        adapter = AnimaVideosAdapter(R.layout.item_video_list, { animaVideo ->
+        adapter = AnimeVideosAdapter(R.layout.item_video_list, { animaVideo ->
             if (animaVideo.checked) {
                 openVideo(animaVideo)
             } else {

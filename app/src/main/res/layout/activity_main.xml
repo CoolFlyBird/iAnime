@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.unual.anima.MainActivity">
+    tools:context="com.unual.anime.MainActivity">
 
-    <com.unual.anima.widget.MySwipeRefreshLayout
+    <com.unual.anime.widget.MySwipeRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,5 +38,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
-    </com.unual.anima.widget.MySwipeRefreshLayout>
+    </com.unual.anime.widget.MySwipeRefreshLayout>
 </LinearLayout>

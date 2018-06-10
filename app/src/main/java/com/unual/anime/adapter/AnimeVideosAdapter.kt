@@ -1,14 +1,14 @@
-package com.unual.anima.adapter
+package com.unual.anime.adapter
 
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import com.unual.anima.R
-import com.unual.anima.data.AnimaInfo
+import com.unual.anime.R
+import com.unual.anime.data.AnimaInfo
 
 /**
  * Created by unual on 2018/5/29.
  */
-class AnimaVideosAdapter(res: Int, private val callback: (AnimaInfo.AnimaVideo) -> Unit) : BaseQuickAdapter<AnimaInfo.AnimaVideo, BaseViewHolder>(res) {
+class AnimeVideosAdapter(res: Int, private val callback: (AnimaInfo.AnimaVideo) -> Unit) : BaseQuickAdapter<AnimaInfo.AnimaVideo, BaseViewHolder>(res) {
 
     override fun convert(helper: BaseViewHolder, item: AnimaInfo.AnimaVideo) {
         with(item) {

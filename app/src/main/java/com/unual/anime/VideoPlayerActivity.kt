@@ -1,10 +1,7 @@
-package com.unual.anima
+package com.unual.anime
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -14,21 +11,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.shuyu.gsyvideoplayer.GSYBaseActivityDetail
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
-import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
-import com.shuyu.gsyvideoplayer.listener.GSYVideoProgressListener
-import com.shuyu.gsyvideoplayer.listener.LockClickListener
 import com.shuyu.gsyvideoplayer.model.GSYVideoModel
-import com.shuyu.gsyvideoplayer.utils.Debuger
 import com.shuyu.gsyvideoplayer.video.ListGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
-import com.unual.anima.data.Anima
-import com.unual.anima.data.AnimaInfo
-import com.unual.anima.data.Constant
+import com.unual.anime.data.AnimaInfo
+import com.unual.anime.data.Constant
 import kotlinx.android.synthetic.main.activity_video_player.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.ArrayList
 

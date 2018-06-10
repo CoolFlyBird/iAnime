@@ -1,4 +1,4 @@
-package com.unual.anima.data
+package com.unual.anime.data
 
 import android.util.Log
 import io.reactivex.Observable

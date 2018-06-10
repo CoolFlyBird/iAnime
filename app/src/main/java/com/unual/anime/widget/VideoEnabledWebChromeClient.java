@@ -1,4 +1,4 @@
-package com.unual.anima.widget;
+package com.unual.anime.widget;
 
 import android.media.MediaPlayer;
 import android.util.Log;

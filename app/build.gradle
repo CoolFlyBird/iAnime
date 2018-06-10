@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion parent.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.unual.anima"
+        applicationId "com.unual.anime"
         minSdkVersion parent.ext.minSdkVersion
         targetSdkVersion parent.ext.targetSdkVersion
         versionCode 1

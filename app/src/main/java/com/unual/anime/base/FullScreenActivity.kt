@@ -1,4 +1,4 @@
-package com.unual.anima.base
+package com.unual.anime.base
 
 import android.view.MotionEvent
 import android.os.Bundle

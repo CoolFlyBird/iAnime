@@ -1,4 +1,4 @@
-package com.unual.anima.data
+package com.unual.anime.data
 
 /**
  * Created by Administrator on 2018/5/29.
