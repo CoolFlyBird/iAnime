@@ -54,3 +54,9 @@ class AnimaInfo(var anima: Anima) : Serializable {
     }
 }
 
+data class Anime(var animeId: String = "", var animeName: String = "", var animeUrl: String = "", var animeImg: String = "") {
+    var record = ""
+}
+
+data class AnimeVideo(var animeId: String = "", var videoId: String = "", var videoName: String = "", var videoPage: String = "", var videoUrl: String = "", var videoType: String = "")
+

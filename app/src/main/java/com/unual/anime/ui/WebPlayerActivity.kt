@@ -1,4 +1,4 @@
-package com.unual.anime
+package com.unual.anime.ui
 
 import android.net.http.SslError
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.unual.anime.R
 import com.unual.anime.base.FullScreenActivity
 import com.unual.anime.data.AnimaInfo
 import com.unual.anime.data.Constant

@@ -1,4 +1,4 @@
-package com.unual.anime
+package com.unual.anime.ui
 
 import android.Manifest
 import android.content.Context
@@ -15,6 +15,7 @@ import com.shuyu.gsyvideoplayer.model.GSYVideoModel
 import com.shuyu.gsyvideoplayer.video.ListGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
+import com.unual.anime.R
 import com.unual.anime.data.AnimaInfo
 import com.unual.anime.data.Constant
 import kotlinx.android.synthetic.main.activity_video_player.*

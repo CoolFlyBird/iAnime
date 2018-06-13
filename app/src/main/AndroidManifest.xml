@@ -13,19 +13,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.unual.anime.MainActivity">
+        <activity
+            android:name="com.unual.anime.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.unual.anime.AnimeActivity" />
         <activity
-            android:name="com.unual.anime.WebPlayerActivity"
+            android:name="com.unual.anime.ui.AnimeActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name="com.unual.anime.ui.WebPlayerActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.unual.anime.VideoPlayerActivity"
+            android:name="com.unual.anime.ui.VideoPlayerActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

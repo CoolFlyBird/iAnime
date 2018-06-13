@@ -1,4 +1,4 @@
-package com.unual.anime
+package com.unual.anime.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.unual.anime.R
 import com.unual.anime.adapter.AnimeVideosAdapter
 import com.unual.anime.base.BaseActivity
 import com.unual.anime.base.Utils
