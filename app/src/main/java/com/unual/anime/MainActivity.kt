@@ -1,13 +1,19 @@
 package com.unual.anime
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import com.unual.anime.base.BaseActivity
 import com.unual.anime.base.BaseFragment
-import com.unual.anime.data.Constant
+import com.unual.anime.data.Anima
+import com.unual.anime.data.`Constant.kt`
+import com.unual.anime.ui.AnimeActivity
 import com.unual.anime.ui.FinishAnimeFragment
 import com.unual.anime.ui.WeekAnimeFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -19,6 +25,7 @@ class MainActivity : BaseActivity() {
     private var current: BaseFragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
         setContentView(R.layout.activity_main)
         checkPermissions()
         setSupportActionBar(mainToolbar)
@@ -61,11 +68,23 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    @AfterPermissionGranted(Constant.REQUEST_CODE)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(anima: Anima) {
+        val intent = Intent(this, AnimeActivity::class.java)
+        intent.putExtra(`Constant.kt`.KEY_INTENT, anima)
+        startActivity(intent)
+    }
+
+    @AfterPermissionGranted(`Constant.kt`.REQUEST_CODE)
     fun checkPermissions() {
         if (!EasyPermissions.hasPermissions(this, *parm)) {
-            EasyPermissions.requestPermissions(this, getString(R.string.setting_request), Constant.REQUEST_CODE, *parm)
+            EasyPermissions.requestPermissions(this, getString(R.string.setting_request), `Constant.kt`.REQUEST_CODE, *parm)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 }

@@ -3,7 +3,7 @@ package com.unual.anime.data
 /**
  * Created by Administrator on 2018/5/29.
  */
-object Constant {
+object Constants {
     const val BASE_URL = "http://www.unual.com/"
 
     const val REQUEST_CODE = 1001

@@ -30,7 +30,7 @@ class FinishAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = AnimeListAdapter(R.layout.item_anime_list, { anime ->
-            var value = getValue(anime.animeName + Constant.LAST)
+            var value = getValue(anime.animeName + `Constant.kt`.LAST)
             if (!value.isEmpty()) {
                 anime.record = value
             }
@@ -38,6 +38,7 @@ class FinishAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener
             EventBus.getDefault().post(anima)
         })
         recycler.adapter = adapter
+        refresh.setOnRefreshListener(this)
         onRefresh()
     }
 

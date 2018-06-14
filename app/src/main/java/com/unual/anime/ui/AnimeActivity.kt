@@ -31,7 +31,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anime)
-        anima = intent.getSerializableExtra(Constant.KEY_INTENT) as Anima
+        anima = intent.getSerializableExtra(`Constant.kt`.KEY_INTENT) as Anima
         title = anima.name
         animaInfo = AnimaInfo(anima)
         refresh.setOnRefreshListener(this)
@@ -54,15 +54,15 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
         playName = animaVideo.videoName
         Log.e("TAG", "open in web${animaVideo.useWebPlayer} - ${animaVideo.videoUrl} is {$animaVideo.videoUrl.isEmpty()}")
-        setValue(anima.name + Constant.LAST, "${Utils.format(Date(), "MM.dd")}·${animaVideo.videoName}")
+        setValue(anima.name + `Constant.kt`.LAST, "${Utils.format(Date(), "MM.dd")}·${animaVideo.videoName}")
         if (animaVideo.useWebPlayer && !animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, WebPlayerActivity::class.java)
-            intent.putExtra(Constant.KEY_INTENT, animaVideo)
+            intent.putExtra(`Constant.kt`.KEY_INTENT, animaVideo)
             startActivity(intent)
         } else if (!animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, VideoPlayerActivity::class.java)
-            intent.putExtra(Constant.KEY_INTENT, animaVideo)
-            intent.putExtra(Constant.KEY_INTENT_EXT, animaInfo)
+            intent.putExtra(`Constant.kt`.KEY_INTENT, animaVideo)
+            intent.putExtra(`Constant.kt`.KEY_INTENT_EXT, animaInfo)
             startActivity(intent)
         }
     }

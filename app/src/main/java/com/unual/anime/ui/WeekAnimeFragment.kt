@@ -15,7 +15,7 @@ import com.unual.anime.R
 import com.unual.anime.adapter.DayAnimeAdapter
 import com.unual.anime.base.BaseFragment
 import com.unual.anime.data.Anima
-import com.unual.anime.data.Constant
+import com.unual.anime.data.`Constant.kt`
 import com.unual.anime.data.Repository
 import com.unual.anime.data.WeekDayClass
 import com.unual.jsoupxpath.JXDocument
@@ -109,7 +109,7 @@ class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
                 }
                 .map { list ->
                     for (anima in list) {
-                        var value = getValue(anima.name + Constant.LAST)
+                        var value = getValue(anima.name + `Constant.kt`.LAST)
                         if (!value.isEmpty()) {
                             anima.record = value
                         }

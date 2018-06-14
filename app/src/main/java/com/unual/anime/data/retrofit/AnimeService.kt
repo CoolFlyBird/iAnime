@@ -1,5 +1,7 @@
-package com.unual.anime.data
+package com.unual.anime.data.retrofit
 
+import com.unual.anime.data.Anime
+import com.unual.anime.data.AnimeVideo
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path

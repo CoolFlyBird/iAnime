@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.unual.anime.data.Anima
-import com.unual.anime.data.Constant
+import com.unual.anime.data.`Constant.kt`
 import com.unual.anime.ui.AnimeActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -18,7 +18,7 @@ import pub.devrel.easypermissions.EasyPermissions
  */
 open class BaseFragment : Fragment() {
     private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-    private val spf by lazy { context?.getSharedPreferences(Constant.KEY_SPF, Context.MODE_PRIVATE) }
+    private val spf by lazy { context?.getSharedPreferences(`Constant.kt`.KEY_SPF, Context.MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +40,7 @@ open class BaseFragment : Fragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(anima: Anima) {
         val intent = Intent(context, AnimeActivity::class.java)
-        intent.putExtra(Constant.KEY_INTENT, anima)
+        intent.putExtra(`Constant.kt`.KEY_INTENT, anima)
         startActivity(intent)
     }
 
