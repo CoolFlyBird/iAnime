@@ -4,7 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.unual.anime.data.`Constant.kt`
+import com.unual.anime.data.Constants
 import pub.devrel.easypermissions.EasyPermissions
 
 /**
@@ -12,7 +12,7 @@ import pub.devrel.easypermissions.EasyPermissions
  */
 open class BaseActivity : AppCompatActivity() {
     private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-    private val spf by lazy { getSharedPreferences(`Constant.kt`.KEY_SPF, Context.MODE_PRIVATE) }
+    private val spf by lazy { getSharedPreferences(Constants.KEY_SPF, Context.MODE_PRIVATE) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }

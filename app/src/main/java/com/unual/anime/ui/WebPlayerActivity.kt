@@ -10,7 +10,7 @@ import android.webkit.WebViewClient
 import com.unual.anime.R
 import com.unual.anime.base.FullScreenActivity
 import com.unual.anime.data.AnimaInfo
-import com.unual.anime.data.`Constant.kt`
+import com.unual.anime.data.Constants
 //import kotlinx.android.synthetic.main.activity_example.*
 import kotlinx.android.synthetic.main.activity_web_player.*
 
@@ -63,7 +63,7 @@ class WebPlayerActivity : FullScreenActivity() {
         // Call private class InsideWebViewClient
         webView.webViewClient = InsideWebViewClient()
         // Navigate anywhere you want, but consider that this classes have only been tested on YouTube's mobile site
-        val animaVideo = intent.getSerializableExtra(`Constant.kt`.KEY_INTENT) as AnimaInfo.AnimaVideo
+        val animaVideo = intent.getSerializableExtra(Constants.KEY_INTENT) as AnimaInfo.AnimaVideo
         var index = animaVideo.checkType
         switchButton.setOnClickListener {
             index++

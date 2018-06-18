@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.unual.anime.base.BaseActivity
 import com.unual.anime.base.BaseFragment
 import com.unual.anime.data.Anima
-import com.unual.anime.data.`Constant.kt`
+import com.unual.anime.data.Constants
 import com.unual.anime.ui.AnimeActivity
 import com.unual.anime.ui.FinishAnimeFragment
 import com.unual.anime.ui.WeekAnimeFragment
@@ -71,14 +71,14 @@ class MainActivity : BaseActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(anima: Anima) {
         val intent = Intent(this, AnimeActivity::class.java)
-        intent.putExtra(`Constant.kt`.KEY_INTENT, anima)
+        intent.putExtra(Constants.KEY_INTENT, anima)
         startActivity(intent)
     }
 
-    @AfterPermissionGranted(`Constant.kt`.REQUEST_CODE)
+    @AfterPermissionGranted(Constants.REQUEST_CODE)
     fun checkPermissions() {
         if (!EasyPermissions.hasPermissions(this, *parm)) {
-            EasyPermissions.requestPermissions(this, getString(R.string.setting_request), `Constant.kt`.REQUEST_CODE, *parm)
+            EasyPermissions.requestPermissions(this, getString(R.string.setting_request),Constants.REQUEST_CODE, *parm)
         }
     }
 

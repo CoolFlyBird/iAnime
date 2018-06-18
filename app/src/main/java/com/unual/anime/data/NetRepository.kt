@@ -77,7 +77,6 @@ class Repository {
                     }
                 }
                 .subscribe()
-        loadAnime(1, { anime -> }, { anime -> }, { anime -> })
     }
 
 
