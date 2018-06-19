@@ -31,7 +31,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anime)
-        anima = intent.getSerializableExtra(`Constant.kt`.KEY_INTENT) as Anima
+        anima = intent.getSerializableExtra(Constants.KEY_INTENT) as Anima
         title = anima.name
         animaInfo = AnimaInfo(anima)
         refresh.setOnRefreshListener(this)
@@ -39,7 +39,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             if (animaVideo.checked) {
                 openVideo(animaVideo)
             } else {
-                getAnimaVideo(animaVideo.videoUrl, { typeUrl ->
+                getAnimeVideo(animaVideo.videoUrl, { typeUrl ->
                     animaVideo.line.addAll(typeUrl.line)
                     handleTypeUrl(typeUrl, animaVideo, -1)
                 })
@@ -54,15 +54,15 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
         playName = animaVideo.videoName
         Log.e("TAG", "open in web${animaVideo.useWebPlayer} - ${animaVideo.videoUrl} is {$animaVideo.videoUrl.isEmpty()}")
-        setValue(anima.name + `Constant.kt`.LAST, "${Utils.format(Date(), "MM.dd")}·${animaVideo.videoName}")
+        setValue(anima.name + Constants.LAST, "${Utils.format(Date(), "MM.dd")}·${animaVideo.videoName}")
         if (animaVideo.useWebPlayer && !animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, WebPlayerActivity::class.java)
-            intent.putExtra(`Constant.kt`.KEY_INTENT, animaVideo)
+            intent.putExtra(Constants.KEY_INTENT, animaVideo)
             startActivity(intent)
         } else if (!animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, VideoPlayerActivity::class.java)
-            intent.putExtra(`Constant.kt`.KEY_INTENT, animaVideo)
-            intent.putExtra(`Constant.kt`.KEY_INTENT_EXT, animaInfo)
+            intent.putExtra(Constants.KEY_INTENT, animaVideo)
+            intent.putExtra(Constants.KEY_INTENT_EXT, animaInfo)
             startActivity(intent)
         }
     }
@@ -71,13 +71,13 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     override fun onRefresh() {
         refresh.isRefreshing = true
         Repository.instance.loadPage(animaInfo.anima.url, { htmlPage ->
-            getAnimaPages(htmlPage, { list ->
+            getAnimePages(htmlPage, { list ->
                 refresh.isRefreshing = false
                 adapter.setNewData(list)
                 adapter.data
                 autoCheckVideoUrl(list)
             })
-        })
+        }, {})
     }
 
     //自动检查 并解析 有无链接
@@ -85,7 +85,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         Observable.fromIterable(list)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map { animaVideo ->
-                    getAnimaVideo(animaVideo.videoUrl, { typeUrl ->
+                    getAnimeVideo(animaVideo.videoUrl, { typeUrl ->
                         animaVideo.line.addAll(typeUrl.line)
                         handleTypeUrl(typeUrl, animaVideo, list.indexOf(animaVideo))
                     })
@@ -93,11 +93,11 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     // 获取动漫全集列表
-    private fun getAnimaPages(htmlPage: String, callback: (List<AnimaInfo.AnimaVideo>) -> Unit) {
-        Observable.just(htmlPage)
+    private fun getAnimePages(htmlPage: String, callback: (List<AnimaInfo.AnimaVideo>) -> Unit) {
+        Observable.just(htmlPage, "", "")
                 .subscribeOn(Schedulers.io())
                 .map { htmlPage ->
-                    parsePage2Animas(htmlPage)
+                    parsePage2Anime(htmlPage)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { list ->
@@ -107,7 +107,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     // 获取播放链接（mp4 或者 另一个链接）
-    private fun getAnimaVideo(pageUrl: String, callback: (TypeUrl) -> Unit) {
+    private fun getAnimeVideo(pageUrl: String, callback: (TypeUrl) -> Unit) {
         Repository.instance.loadPage(pageUrl, { htmlPage ->
             Observable.just(htmlPage)
                     .subscribeOn(Schedulers.io())
@@ -118,11 +118,11 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                     .subscribe { typeUrl ->
                         callback.invoke(typeUrl)
                     }
-        })
+        }, {})
     }
 
     // 解析动漫全集
-    private fun parsePage2Animas(htmlPage: String): ArrayList<AnimaInfo.AnimaVideo> {
+    private fun parsePage2Anime(htmlPage: String): ArrayList<AnimaInfo.AnimaVideo> {
         val jxDocument = JXDocument.create(htmlPage)
         val namePath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/em/text()"
         val urlPath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/@href"
@@ -300,5 +300,5 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                     // 动漫全集列表
                     callback.invoke(url)
                 }
-    })
+    }, {})
 }

@@ -17,7 +17,7 @@ import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
 import com.unual.anime.R
 import com.unual.anime.data.AnimaInfo
-import com.unual.anime.data.`Constant.kt`
+import com.unual.anime.data.Constants
 import kotlinx.android.synthetic.main.activity_video_player.*
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.ArrayList
@@ -27,7 +27,7 @@ import java.util.ArrayList
  */
 class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
     private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-    private val spf by lazy { getSharedPreferences(`Constant.kt`.KEY_SPF, Context.MODE_PRIVATE) }
+    private val spf by lazy { getSharedPreferences(Constants.KEY_SPF, Context.MODE_PRIVATE) }
     private var animaVideo: AnimaInfo.AnimaVideo? = null
     private var animaInfo: AnimaInfo? = null
 
@@ -52,8 +52,8 @@ class VideoPlayerActivity : GSYBaseActivityDetail<ListGSYVideoPlayer>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_player)
         initVideo()
-        animaVideo = intent.getSerializableExtra(`Constant.kt`.KEY_INTENT) as AnimaInfo.AnimaVideo
-        animaInfo = intent.getSerializableExtra(`Constant.kt`.KEY_INTENT_EXT) as AnimaInfo
+        animaVideo = intent.getSerializableExtra(Constants.KEY_INTENT) as AnimaInfo.AnimaVideo
+        animaInfo = intent.getSerializableExtra(Constants.KEY_INTENT_EXT) as AnimaInfo
         val urls = ArrayList<GSYVideoModel>()
         urls.add(GSYVideoModel(animaVideo?.videoUrl, animaVideo?.videoName))
         videoPlayer.setUp(urls, true, 0)

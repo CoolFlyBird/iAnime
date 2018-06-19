@@ -58,5 +58,7 @@ data class Anime(var animeId: String = "", var animeName: String = "", var anime
     var record = ""
 }
 
-data class AnimeVideo(var animeId: String = "", var videoId: String = "", var videoName: String = "", var videoPage: String = "", var videoUrl: String = "", var videoType: String = "")
+data class AnimeVideo(var animeId: String = "", var videoId: String = "", var videoName: String = "", var videoPage: String = "", var videoUrl: String = "", var videoType: String = "") {
+    var record = ""
+}
 

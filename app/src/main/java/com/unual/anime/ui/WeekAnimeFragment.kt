@@ -6,13 +6,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import com.unual.anime.R
-import com.unual.anime.adapter.DayAnimeAdapter
 import com.unual.anime.base.BaseFragment
 import com.unual.anime.data.Anima
 import com.unual.anime.data.Constants
@@ -22,9 +17,7 @@ import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_day_anime.*
 import kotlinx.android.synthetic.main.fragment_week_anime.*
-import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 /**
@@ -32,7 +25,7 @@ import java.util.*
  */
 class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-    private val fragments: ArrayList<DayAnimasFragment> = ArrayList()
+    private val fragments: ArrayList<DayAnimeFragment> = ArrayList()
     private var week = ArrayList<WeekDayClass>()
 
     init {
@@ -46,14 +39,11 @@ class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
         week.add(WeekDayClass.Sun)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = inflater.inflate(R.layout.fragment_week_anime, container, false)
-        return view
-    }
+    override fun getLayoutId(): Int = R.layout.fragment_week_anime
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         for (i in 0 until week.size) {
-            fragments.add(DayAnimasFragment())
+            fragments.add(DayAnimeFragment())
         }
         viewPager.adapter = MyPagerAdapter(fragmentManager, fragments, week)
         tabLayout.setupWithViewPager(viewPager)
@@ -85,7 +75,7 @@ class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun getWeekAnima(week: List<WeekDayClass>, callback: (List<List<Anima>>) -> Unit) {
         Repository.instance.loadPage("http://www.dilidili.wang/", { htmlPage ->
             getOneDay(htmlPage, week, callback)
-        })
+        }, {})
     }
 
     // 更新动漫列表
@@ -131,43 +121,12 @@ class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    class MyPagerAdapter(fm: FragmentManager?, private val fragments: ArrayList<DayAnimasFragment>, private val tabs: List<WeekDayClass>) : FragmentPagerAdapter(fm) {
+    class MyPagerAdapter(fm: FragmentManager?, private val fragments: ArrayList<DayAnimeFragment>, private val tabs: List<WeekDayClass>) : FragmentPagerAdapter(fm) {
         override fun getPageTitle(position: Int) = tabs[position].key()
         override fun getItem(position: Int): Fragment {
             return fragments[position]
         }
 
         override fun getCount() = fragments.size
-    }
-
-    class DayAnimasFragment : Fragment() {
-        fun Fragment.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
-            Toast.makeText(context, message, duration).show()
-        }
-
-        private var animas: ArrayList<Anima> = ArrayList()
-        private var adapter: DayAnimeAdapter? = null
-
-        fun setValue(data: List<Anima>) {
-            animas.clear()
-            animas.addAll(data)
-            recycler?.adapter?.notifyDataSetChanged()
-        }
-
-
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            return inflater.inflate(R.layout.fragment_day_anime, container, false)
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-            recycler?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = DayAnimeAdapter(R.layout.item_anima_list, { item ->
-                EventBus.getDefault().post(item)
-            })
-            adapter?.setNewData(animas)
-            recycler?.adapter = adapter
-        }
-
     }
 }

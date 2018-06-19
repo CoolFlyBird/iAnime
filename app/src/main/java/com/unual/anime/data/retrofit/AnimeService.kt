@@ -10,7 +10,7 @@ import retrofit2.http.Query
 /**
  * Created by unual on 2018/6/14.
  */
-public interface AnimeService {
+interface AnimeService {
     @GET("anime/list")
     fun loadAnime(@Query("page") page: Int, @Query("limit") limit: Int): Observable<List<Anime>>
 

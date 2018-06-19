@@ -1,6 +1,5 @@
 package com.unual.anime.data
 
-import android.util.Log
 import com.unual.anime.data.retrofit.AnimeService
 import com.unual.anime.exception.ApiException
 import io.reactivex.Observable
@@ -15,7 +14,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.Serializable
 
 /**
  * Created by Administrator on 2018/5/29.
@@ -80,19 +78,17 @@ class Repository {
     }
 
 
-    fun loadAnime(id: Int, callback1: (Anime) -> Unit, callback2: (Anime) -> Unit, callback3: (Anime) -> Unit) {
-        var animeObservable = animeService.loadAnime(id)
-        animeObservable.subscribe(object : Observer<Anime> {
+    fun loadAnime(id: Int, onSuccess: (Anime) -> Unit, onFail: (Exception) -> Unit) {
+        animeService.loadAnime(id).subscribe(object : Observer<Anime> {
             override fun onSubscribe(d: Disposable) {
-
             }
 
             override fun onError(e: Throwable) {
-                callback1.invoke(Anime())
+                onFail.invoke(Exception(e))
             }
 
-            override fun onNext(anim: Anime) {
-                callback2.invoke(anim)
+            override fun onNext(anime: Anime) {
+                onSuccess.invoke(anime)
             }
 
             override fun onComplete() {
@@ -100,7 +96,7 @@ class Repository {
         })
     }
 
-    fun loadAnimeList(page: Int, limit: Int, callback: (List<Anime>) -> Unit) {
+    fun loadAnimeList(page: Int, limit: Int, onSuccess: (List<Anime>) -> Unit, onFail: (Exception) -> Unit) {
         animeService.loadAnime(page, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -109,11 +105,11 @@ class Repository {
                     }
 
                     override fun onError(e: Throwable) {
-                        callback.invoke(ArrayList<Anime>())
+                        onFail.invoke(Exception(e))
                     }
 
-                    override fun onNext(animList: List<Anime>) {
-                        callback.invoke(animList)
+                    override fun onNext(animeList: List<Anime>) {
+                        onSuccess.invoke(animeList)
                     }
 
                     override fun onComplete() {
@@ -121,18 +117,18 @@ class Repository {
                 })
     }
 
-    fun loadAnimeVideo(id: Int, page: Int, limit: Int, callback: (List<AnimeVideo>) -> Unit) {
+    fun loadAnimeVideo(id: Int, page: Int, limit: Int, onSuccess: (List<AnimeVideo>) -> Unit, onFail: (Exception) -> Unit) {
         animeService.loadAnimeVideo(id, page, limit)
                 .subscribe(object : Observer<List<AnimeVideo>> {
                     override fun onSubscribe(d: Disposable) {
                     }
 
                     override fun onError(e: Throwable) {
-                        callback.invoke(ArrayList<AnimeVideo>())
+                        onFail.invoke(Exception(e))
                     }
 
-                    override fun onNext(animList: List<AnimeVideo>) {
-                        callback.invoke(animList)
+                    override fun onNext(animeList: List<AnimeVideo>) {
+                        onSuccess.invoke(animeList)
                     }
 
                     override fun onComplete() {
