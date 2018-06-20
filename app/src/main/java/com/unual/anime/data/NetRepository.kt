@@ -1,7 +1,7 @@
 package com.unual.anime.data
 
-import com.unual.anime.data.retrofit.AnimeService
-import com.unual.anime.exception.ApiException
+import com.unual.anime.data.api.AnimeService
+import com.unual.anime.data.exception.ApiException
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -97,7 +97,7 @@ class Repository {
     }
 
     fun loadAnimeList(page: Int, limit: Int, onSuccess: (List<Anime>) -> Unit, onFail: (Exception) -> Unit) {
-        animeService.loadAnime(page, limit)
+        animeService.loadAnimeList(page, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<List<Anime>> {

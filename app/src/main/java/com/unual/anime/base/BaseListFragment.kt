@@ -49,6 +49,7 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
     }
 
     fun authRefresh() {
+        getSwipeRefreshLayout()
         if (swipeRefreshLayout == null) return
         swipeRefreshLayout.post {
             if (swipeRefreshLayout != null) {
