@@ -1,9 +1,11 @@
-package com.unual.anime.data
+package com.unual.anime.utils
 
 /**
  * Created by Administrator on 2018/5/29.
  */
 object Constants {
+    const val PAGE_URL = "http://www.dilidili.wang/"
+
     const val BASE_URL = "http://www.unual.com/"
 
     const val REQUEST_CODE = 1001

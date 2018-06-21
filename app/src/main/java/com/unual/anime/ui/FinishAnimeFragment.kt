@@ -8,10 +8,9 @@ import com.chad.library.adapter.base.BaseViewHolder
 import com.unual.anime.R
 import com.unual.anime.adapter.AnimeListAdapter
 import com.unual.anime.base.BaseListFragment
-import com.unual.anime.data.Anima
-import com.unual.anime.data.Anime
-import com.unual.anime.data.Constants
-import com.unual.anime.widget.DialogUtils
+import com.unual.anime.data.entity.Anima
+import com.unual.anime.data.entity.Anime
+import com.unual.anime.utils.Constants
 import kotlinx.android.synthetic.main.fragment_finish_anime.*
 import org.greenrobot.eventbus.EventBus
 
@@ -41,6 +40,14 @@ class FinishAnimeFragment : BaseListFragment<Anime>(), IFinishAnimeView {
     override fun loadListData() {
         Log.e("TAG", "loadListData:${page} - ${pageSize}")
         presenter.loadAnimeList(page, pageSize)
+    }
+
+    override fun showLoading() {
+
+    }
+
+    override fun closeLoading() {
+        refresh.isRefreshing = false
     }
 
     override fun bindAdapter(): BaseQuickAdapter<Anime, BaseViewHolder> {

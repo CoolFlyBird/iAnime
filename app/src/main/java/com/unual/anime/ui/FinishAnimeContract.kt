@@ -3,8 +3,8 @@ package com.unual.anime.ui
 import com.unual.anime.base.BaseFragment
 import com.unual.anime.base.BasePresenter
 import com.unual.anime.base.IBaseView
-import com.unual.anime.data.Anime
-import com.unual.anime.data.RetrofitManager
+import com.unual.anime.data.entity.Anime
+import com.unual.anime.data.ApiService
 import com.unual.anime.data.exception.ApiException
 import com.unual.anime.data.observer.HttpRxObservable
 import com.unual.anime.data.observer.HttpRxObserver
@@ -25,7 +25,7 @@ class FinishAnimePresenter(var view: IFinishAnimeView, var context: BaseFragment
     : BasePresenter<IFinishAnimeView, BaseFragment>(view, context), IFinishAnimePresenter {
     override fun loadAnimeList(page: Int, limit: Int) {
         HttpRxObservable
-                .getObservable(RetrofitManager.instance.getAnimeService().loadAnimeList(page, limit), context)
+                .getObservable(ApiService.instance.getAnimeService().loadAnimeList(page, limit), context)
                 .subscribe(object : HttpRxObserver<List<Anime>>() {
                     override fun onStart(d: Disposable) {
                         mViewRef?.get()?.showLoading()

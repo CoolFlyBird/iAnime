@@ -1,6 +1,7 @@
 package com.unual.anime.data.observer
 
 import android.text.TextUtils
+import android.util.Log
 import com.unual.anime.data.exception.ApiException
 import com.unual.anime.data.exception.ExceptionEngine
 import com.unual.anime.data.request.HttpRequestListener
@@ -24,6 +25,7 @@ abstract class HttpRxObserver<T> : Observer<T>, HttpRequestListener {
     }
 
     override fun onError(e: Throwable) {
+        Log.e("TAG","onError")
         RxActionManagerImpl.mInstance.remove(mTag)
         if (e is ApiException) {
             onError(e)
@@ -32,9 +34,14 @@ abstract class HttpRxObserver<T> : Observer<T>, HttpRequestListener {
         }
     }
 
-    override fun onComplete() {}
+    override fun onComplete() {
+
+        Log.e("TAG","onComplete")
+    }
 
     override fun onNext(@NonNull t: T) {
+
+        Log.e("TAG","onNext")
         if (!TextUtils.isEmpty(mTag)) {
             RxActionManagerImpl.mInstance.remove(mTag)
         }
@@ -42,6 +49,8 @@ abstract class HttpRxObserver<T> : Observer<T>, HttpRequestListener {
     }
 
     override fun onSubscribe(@NonNull d: Disposable) {
+
+        Log.e("TAG","onSubscribe")
         if (!TextUtils.isEmpty(mTag)) {
             RxActionManagerImpl.mInstance.add(mTag, d)
         }
@@ -49,6 +58,8 @@ abstract class HttpRxObserver<T> : Observer<T>, HttpRequestListener {
     }
 
     override fun cancel() {
+
+        Log.e("TAG","cancel")
         if (!TextUtils.isEmpty(mTag)) {
             RxActionManagerImpl.mInstance.cancel(mTag)
         }

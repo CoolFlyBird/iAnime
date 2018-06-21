@@ -1,4 +1,4 @@
-package com.unual.anime.data
+package com.unual.anime.data.entity
 
 import com.unual.anime.data.api.ApiCodeConfig
 

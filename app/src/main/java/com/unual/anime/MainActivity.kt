@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import com.unual.anime.base.BaseActivity
 import com.unual.anime.base.BaseFragment
-import com.unual.anime.data.Anima
-import com.unual.anime.data.Constants
+import com.unual.anime.data.entity.Anima
+import com.unual.anime.utils.Constants
 import com.unual.anime.ui.AnimeActivity
 import com.unual.anime.ui.FinishAnimeFragment
 import com.unual.anime.ui.WeekAnimeFragment
@@ -78,7 +78,7 @@ class MainActivity : BaseActivity() {
     @AfterPermissionGranted(Constants.REQUEST_CODE)
     fun checkPermissions() {
         if (!EasyPermissions.hasPermissions(this, *parm)) {
-            EasyPermissions.requestPermissions(this, getString(R.string.setting_request),Constants.REQUEST_CODE, *parm)
+            EasyPermissions.requestPermissions(this, getString(R.string.setting_request), Constants.REQUEST_CODE, *parm)
         }
     }
 

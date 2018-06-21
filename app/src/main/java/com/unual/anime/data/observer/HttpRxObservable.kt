@@ -1,9 +1,9 @@
 package com.unual.anime.data.observer
 
 import com.trello.rxlifecycle2.LifecycleProvider
+import com.unual.anime.data.entity.HttpResponse
 import com.unual.anime.data.function.HttpResultFunction
 import com.unual.anime.data.function.ServerResultFunction
-import com.unual.anime.data.HttpResponse
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -29,6 +29,20 @@ object HttpRxObservable {
                     .onErrorResumeNext(HttpResultFunction<T>())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+        }
+        return observable
+    }
+
+    fun <T> getPageObservable(apiObservable: Observable<T>, lifecycle: LifecycleProvider<*>?): Observable<T> {
+        var observable: Observable<T> = if (lifecycle != null) {
+            apiObservable
+                    .compose(lifecycle.bindToLifecycle())
+                    .onErrorResumeNext(HttpResultFunction<T>())
+                    .subscribeOn(Schedulers.io())
+        } else {
+            apiObservable
+                    .onErrorResumeNext(HttpResultFunction<T>())
+                    .subscribeOn(Schedulers.io())
         }
         return observable
     }

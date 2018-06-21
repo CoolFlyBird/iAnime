@@ -16,8 +16,8 @@ import com.shuyu.gsyvideoplayer.video.ListGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
 import com.unual.anime.R
-import com.unual.anime.data.AnimaInfo
-import com.unual.anime.data.Constants
+import com.unual.anime.data.entity.AnimaInfo
+import com.unual.anime.utils.Constants
 import kotlinx.android.synthetic.main.activity_video_player.*
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.ArrayList

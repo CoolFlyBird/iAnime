@@ -19,7 +19,7 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
         BaseQuickAdapter.OnItemClickListener {
     private lateinit var mAdapter: BaseQuickAdapter<DATA, BaseViewHolder>
     private var isRefresh = true
-    protected var page = 1
+    protected var page = 0
     protected val pageSize = 20
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

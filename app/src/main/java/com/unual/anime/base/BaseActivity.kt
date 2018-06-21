@@ -3,10 +3,10 @@ package com.unual.anime.base
 import android.Manifest
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
-import com.unual.anime.data.Constants
-import com.unual.anime.widget.DialogUtils
+import com.unual.anime.utils.Constants
+import com.unual.anime.utils.DialogUtils
+import com.unual.anime.utils.ToastUtil
 import pub.devrel.easypermissions.EasyPermissions
 
 /**
@@ -39,7 +39,7 @@ open class BaseActivity : RxAppCompatActivity(), IBaseView {
     }
 
     override fun showToast(msg: String) {
-        Log.e("TAG", "BaseActivity -> showToast($msg)")
+        ToastUtil.showToast(msg)
     }
 
 

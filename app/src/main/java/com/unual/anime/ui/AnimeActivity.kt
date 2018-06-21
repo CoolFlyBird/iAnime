@@ -11,12 +11,16 @@ import com.unual.anime.R
 import com.unual.anime.adapter.AnimeVideosAdapter
 import com.unual.anime.base.BaseActivity
 import com.unual.anime.base.Utils
-import com.unual.anime.data.*
+import com.unual.anime.data.ApiService
+import com.unual.anime.data.entity.Anima
+import com.unual.anime.data.entity.AnimaInfo
+import com.unual.anime.utils.Constants
+import com.unual.anime.data.entity.TypeUrl
 import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_anime.*
+import kotlinx.android.synthetic.main.a_common_list.*
 import java.util.*
 
 /**
@@ -30,7 +34,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var playName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_anime)
+        setContentView(R.layout.a_common_list)
         anima = intent.getSerializableExtra(Constants.KEY_INTENT) as Anima
         title = anima.name
         animaInfo = AnimaInfo(anima)
@@ -70,14 +74,16 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     //刷新页面
     override fun onRefresh() {
         refresh.isRefreshing = true
-//        Repository.instance.loadPage(animaInfo.anima.url, { htmlPage ->
-//            getAnimePages(htmlPage, { list ->
-//                refresh.isRefreshing = false
-//                adapter.setNewData(list)
-//                adapter.data
-//                autoCheckVideoUrl(list)
-//            })
-//        }, {})
+        ApiService.instance.getPageService()
+                .loadPage(animaInfo.anima.url)
+                .map { htmlPage ->
+                    getAnimePages(htmlPage, { list ->
+                        refresh.isRefreshing = false
+                        adapter.setNewData(list)
+                        adapter.data
+                        autoCheckVideoUrl(list)
+                    })
+                }.subscribe()
     }
 
     //自动检查 并解析 有无链接
@@ -94,7 +100,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     // 获取动漫全集列表
     private fun getAnimePages(htmlPage: String, callback: (List<AnimaInfo.AnimaVideo>) -> Unit) {
-        Observable.just(htmlPage, "", "")
+        Observable.just(htmlPage)
                 .subscribeOn(Schedulers.io())
                 .map { htmlPage ->
                     parsePage2Anime(htmlPage)
@@ -108,17 +114,15 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     // 获取播放链接（mp4 或者 另一个链接）
     private fun getAnimeVideo(pageUrl: String, callback: (TypeUrl) -> Unit) {
-//        Repository.instance.loadPage(pageUrl, { htmlPage ->
-//            Observable.just(htmlPage)
-//                    .subscribeOn(Schedulers.io())
-//                    .map { htmlPage ->
-//                        parsePage2Url(htmlPage)
-//                    }
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe { typeUrl ->
-//                        callback.invoke(typeUrl)
-//                    }
-//        }, {})
+        ApiService.instance.getPageService()
+                .loadPage(pageUrl)
+                .map { htmlPage ->
+                    parsePage2Url(htmlPage)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { typeUrl ->
+                    callback.invoke(typeUrl)
+                }
     }
 
     // 解析动漫全集
@@ -261,7 +265,8 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                 if (index == -1) openVideo(animaVideo)
                 else adapter.notifyItemChanged(index)
             }
-            1, 3 ->{}
+            1, 3 -> {
+            }
 //                getUrlFromType1(typeUrl.url, { result ->
 //                Log.e("TAG", "type:1,3 -> $index-${typeUrl.url} $result")
 //                if (!result.isEmpty()) {

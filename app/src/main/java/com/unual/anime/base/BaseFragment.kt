@@ -4,15 +4,15 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.trello.rxlifecycle2.components.support.RxFragment
-import com.unual.anime.data.Anima
-import com.unual.anime.data.Constants
+import com.unual.anime.data.entity.Anima
+import com.unual.anime.utils.Constants
 import com.unual.anime.ui.AnimeActivity
-import com.unual.anime.widget.DialogUtils
+import com.unual.anime.utils.DialogUtils
+import com.unual.anime.utils.ToastUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -84,7 +84,7 @@ open abstract class BaseFragment : RxFragment(), IBaseView {
     }
 
     override fun showToast(msg: String) {
-        Log.e("TAG", "BaseFragment -> showToast($msg)")
+        ToastUtil.showToast(msg)
     }
 
     protected abstract fun getLayoutId(): Int

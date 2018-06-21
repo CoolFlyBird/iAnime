@@ -1,4 +1,4 @@
-package com.unual.anime.widget
+package com.unual.anime.utils
 
 import android.content.Context
 import android.support.v7.app.AlertDialog

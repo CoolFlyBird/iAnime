@@ -3,7 +3,7 @@ package com.unual.anime.adapter
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.unual.anime.R
-import com.unual.anime.data.AnimaInfo
+import com.unual.anime.data.entity.AnimaInfo
 
 /**
  * Created by unual on 2018/5/29.

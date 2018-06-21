@@ -9,8 +9,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.unual.anime.R
 import com.unual.anime.base.FullScreenActivity
-import com.unual.anime.data.AnimaInfo
-import com.unual.anime.data.Constants
+import com.unual.anime.data.entity.AnimaInfo
+import com.unual.anime.utils.Constants
 //import kotlinx.android.synthetic.main.activity_example.*
 import kotlinx.android.synthetic.main.activity_web_player.*
 

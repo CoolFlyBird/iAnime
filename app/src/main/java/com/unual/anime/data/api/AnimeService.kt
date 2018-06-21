@@ -1,8 +1,7 @@
 package com.unual.anime.data.api
 
-import com.unual.anime.data.Anime
-import com.unual.anime.data.AnimeVideo
-import com.unual.anime.data.HttpResponse
+import com.unual.anime.data.entity.Anime
+import com.unual.anime.data.entity.AnimeVideo
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -17,8 +16,8 @@ interface AnimeService {
     fun loadAnime(@Path("id") id: Int): Observable<Anime>
 
     @GET("anime/list")
-    fun loadAnimeList(@Query("page") page: Int, @Query("limit") limit: Int): Observable<List<Anime>>
+    fun loadAnimeList(@Query("page") page: Int, @Query("limit") limit: Int): Observable<ArrayList<Anime>>
 
     @GET("anime/{id}/video")
-    fun loadAnimeVideo(@Path("id") id: Int, @Query("page") page: Int, @Query("limit") limit: Int): Observable<List<AnimeVideo>>
+    fun loadAnimeVideo(@Path("id") id: Int, @Query("page") page: Int, @Query("limit") limit: Int): Observable<ArrayList<AnimeVideo>>
 }

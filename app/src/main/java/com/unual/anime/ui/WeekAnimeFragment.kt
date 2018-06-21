@@ -9,9 +9,10 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.view.View
 import com.unual.anime.R
 import com.unual.anime.base.BaseFragment
-import com.unual.anime.data.Anima
-import com.unual.anime.data.Constants
-import com.unual.anime.data.WeekDayClass
+import com.unual.anime.data.ApiService
+import com.unual.anime.data.entity.Anima
+import com.unual.anime.utils.Constants
+import com.unual.anime.data.entity.WeekDay
 import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,32 +23,36 @@ import java.util.*
 /**
  * Created by unual on 2018/6/14.
  */
-class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
+class WeekAnimeFragment : BaseFragment()
+//        , SwipeRefreshLayout.OnRefreshListener
+{
     private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
     private val fragments: ArrayList<DayAnimeFragment> = ArrayList()
-    private var week = ArrayList<WeekDayClass>()
+    private var week = ArrayList<WeekDay>()
 
     init {
         week.clear()
-        week.add(WeekDayClass.Mon)
-        week.add(WeekDayClass.Tues)
-        week.add(WeekDayClass.Wed)
-        week.add(WeekDayClass.Thur)
-        week.add(WeekDayClass.Fri)
-        week.add(WeekDayClass.Sat)
-        week.add(WeekDayClass.Sun)
+        week.add(WeekDay.Mon)
+        week.add(WeekDay.Tues)
+        week.add(WeekDay.Wed)
+        week.add(WeekDay.Thur)
+        week.add(WeekDay.Fri)
+        week.add(WeekDay.Sat)
+        week.add(WeekDay.Sun)
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_week_anime
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         for (i in 0 until week.size) {
-            fragments.add(DayAnimeFragment())
+            var fragment = DayAnimeFragment()
+            fragment.day = week[i]
+            fragments.add(fragment)
         }
         viewPager.adapter = MyPagerAdapter(fragmentManager, fragments, week)
         tabLayout.setupWithViewPager(viewPager)
-        refresh.setOnRefreshListener(this)
-        onRefresh()
+//        refresh.setOnRefreshListener(this)
+//        onRefresh()
         selectToday()
     }
 
@@ -60,25 +65,18 @@ class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
         tabLayout.getTabAt(index)?.select()
     }
 
-    override fun onRefresh() {
-        refresh.isRefreshing = true
-        getWeekAnima(week, { list ->
-            refresh.isRefreshing = false
-            for (i in 0 until list.size) {
-                fragments[i].setValue(list[i])
-            }
-        })
-    }
-
-    // 追更动漫
-    private fun getWeekAnima(week: List<WeekDayClass>, callback: (List<List<Anima>>) -> Unit) {
-//        Repository.instance.loadPage("http://www.dilidili.wang/", { htmlPage ->
-//            getOneDay(htmlPage, week, callback)
-//        }, {})
-    }
+//    override fun onRefresh() {
+//        refresh.isRefreshing = true
+//        getWeekAnima(week, { list ->
+//            refresh.isRefreshing = false
+//            for (i in 0 until list.size) {
+//                fragments[i].setNewData(list[i])
+//            }
+//        })
+//    }
 
     // 更新动漫列表
-    private fun getOneDay(page: String, week: List<WeekDayClass>, callback: (List<List<Anima>>) -> Unit) {
+    private fun getOneDay(page: String, week: List<WeekDay>, callback: (List<List<Anima>>) -> Unit) {
         var jxDocument = JXDocument.create(page)
         Observable.fromIterable(week)
                 .subscribeOn(Schedulers.io())
@@ -120,7 +118,7 @@ class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    class MyPagerAdapter(fm: FragmentManager?, private val fragments: ArrayList<DayAnimeFragment>, private val tabs: List<WeekDayClass>) : FragmentPagerAdapter(fm) {
+    class MyPagerAdapter(fm: FragmentManager?, private val fragments: ArrayList<DayAnimeFragment>, private val tabs: List<WeekDay>) : FragmentPagerAdapter(fm) {
         override fun getPageTitle(position: Int) = tabs[position].key()
         override fun getItem(position: Int): Fragment {
             return fragments[position]

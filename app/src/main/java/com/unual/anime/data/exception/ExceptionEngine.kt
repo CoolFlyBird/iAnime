@@ -14,7 +14,7 @@ import java.text.ParseException
 class ExceptionEngine {
     companion object {
         const val UN_KNOWN_ERROR = 1000//未知错误
-        private const val ANALYTIC_SERVER_DATA_ERROR = 1001//解析(服务器)数据错误
+        const val ANALYTIC_SERVER_DATA_ERROR = 1001//解析(服务器)数据错误
         private const val ANALYTIC_CLIENT_DATA_ERROR = 1002//解析(客户端)数据错误
         private const val CONNECT_ERROR = 1003//网络连接错误
         private const val TIME_OUT_ERROR = 1004//网络连接超时
@@ -23,6 +23,10 @@ class ExceptionEngine {
             if (e is HttpException) {             //HTTP错误
                 ex = ApiException(e.code(), e)
                 ex.msg = "网络不给力，请稍后再试"  //均视为网络错误
+                return ex
+            } else if (e is ClientHttpException) {//HTTP300以上 错误
+                ex = ApiException(e.code, e)
+                ex.msg = "网络错误"
                 return ex
             } else if (e is ServerException) {    //服务器返回的错误
                 ex = ApiException(e.code, e)

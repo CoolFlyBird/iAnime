@@ -1,11 +1,11 @@
-package com.unual.anime.data
+package com.unual.anime.data.entity
 
 import java.io.Serializable
 
 /**
  * Created by unual on 2018/5/28.
  */
-enum class WeekDayClass {
+enum class WeekDay {
     Mon {
         override fun key() = "周一"
         override fun value() = "elmnt-one"

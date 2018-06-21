@@ -1,6 +1,8 @@
 package com.unual.anime.data
 
 import com.unual.anime.data.api.AnimeService
+import com.unual.anime.data.api.PageService
+import com.unual.anime.utils.Constants
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,25 +13,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Created by Administrator on 2018/6/20.
  */
-class RetrofitManager {
+class ApiService {
     private var animeService: AnimeService? = null
 
     companion object {
-        val instance by lazy { RetrofitManager() }
+        val instance by lazy { ApiService() }
     }
 
-    fun getAgentHttpClient(): OkHttpClient {
-        var builder = OkHttpClient.Builder()
-        builder.addInterceptor { chain: Interceptor.Chain ->
-            val originalRequest = chain.request()
-            val authorised = originalRequest.newBuilder().header("user-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36")
-            val request = authorised.build()
-            chain.proceed(request)
-        }
-//        val loginInterceptor = HttpLoggingInterceptor()
-//        loginInterceptor.level = HttpLoggingInterceptor.Level.BODY
-//        builder.addInterceptor(loginInterceptor)
-        return builder.build()
+    fun getPageService(): PageService {
+        return PageService()
     }
 
     fun getAnimeService(): AnimeService {

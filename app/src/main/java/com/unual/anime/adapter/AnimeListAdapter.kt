@@ -4,7 +4,7 @@ import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.unual.anime.R
-import com.unual.anime.data.Anime
+import com.unual.anime.data.entity.Anime
 import kotlinx.android.synthetic.main.item_anime_list.view.*
 
 /**
