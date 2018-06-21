@@ -11,7 +11,6 @@ import com.unual.anime.R
 import com.unual.anime.base.BaseFragment
 import com.unual.anime.data.Anima
 import com.unual.anime.data.Constants
-import com.unual.anime.data.Repository
 import com.unual.anime.data.WeekDayClass
 import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
@@ -73,9 +72,9 @@ class WeekAnimeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     // 追更动漫
     private fun getWeekAnima(week: List<WeekDayClass>, callback: (List<List<Anima>>) -> Unit) {
-        Repository.instance.loadPage("http://www.dilidili.wang/", { htmlPage ->
-            getOneDay(htmlPage, week, callback)
-        }, {})
+//        Repository.instance.loadPage("http://www.dilidili.wang/", { htmlPage ->
+//            getOneDay(htmlPage, week, callback)
+//        }, {})
     }
 
     // 更新动漫列表

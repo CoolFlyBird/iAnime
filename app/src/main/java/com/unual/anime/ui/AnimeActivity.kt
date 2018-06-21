@@ -70,14 +70,14 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     //刷新页面
     override fun onRefresh() {
         refresh.isRefreshing = true
-        Repository.instance.loadPage(animaInfo.anima.url, { htmlPage ->
-            getAnimePages(htmlPage, { list ->
-                refresh.isRefreshing = false
-                adapter.setNewData(list)
-                adapter.data
-                autoCheckVideoUrl(list)
-            })
-        }, {})
+//        Repository.instance.loadPage(animaInfo.anima.url, { htmlPage ->
+//            getAnimePages(htmlPage, { list ->
+//                refresh.isRefreshing = false
+//                adapter.setNewData(list)
+//                adapter.data
+//                autoCheckVideoUrl(list)
+//            })
+//        }, {})
     }
 
     //自动检查 并解析 有无链接
@@ -108,17 +108,17 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     // 获取播放链接（mp4 或者 另一个链接）
     private fun getAnimeVideo(pageUrl: String, callback: (TypeUrl) -> Unit) {
-        Repository.instance.loadPage(pageUrl, { htmlPage ->
-            Observable.just(htmlPage)
-                    .subscribeOn(Schedulers.io())
-                    .map { htmlPage ->
-                        parsePage2Url(htmlPage)
-                    }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { typeUrl ->
-                        callback.invoke(typeUrl)
-                    }
-        }, {})
+//        Repository.instance.loadPage(pageUrl, { htmlPage ->
+//            Observable.just(htmlPage)
+//                    .subscribeOn(Schedulers.io())
+//                    .map { htmlPage ->
+//                        parsePage2Url(htmlPage)
+//                    }
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe { typeUrl ->
+//                        callback.invoke(typeUrl)
+//                    }
+//        }, {})
     }
 
     // 解析动漫全集
@@ -261,15 +261,16 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                 if (index == -1) openVideo(animaVideo)
                 else adapter.notifyItemChanged(index)
             }
-            1, 3 -> getUrlFromType1(typeUrl.url, { result ->
-                Log.e("TAG", "type:1,3 -> $index-${typeUrl.url} $result")
-                if (!result.isEmpty()) {
-                    animaVideo.videoUrl = result
-                    animaVideo.checked = true
-                }
-                if (index == -1) openVideo(animaVideo)
-                else adapter.notifyItemChanged(index)
-            })
+            1, 3 ->{}
+//                getUrlFromType1(typeUrl.url, { result ->
+//                Log.e("TAG", "type:1,3 -> $index-${typeUrl.url} $result")
+//                if (!result.isEmpty()) {
+//                    animaVideo.videoUrl = result
+//                    animaVideo.checked = true
+//                }
+//                if (index == -1) openVideo(animaVideo)
+//                else adapter.notifyItemChanged(index)
+//            })
             else -> {
                 Log.e("TAG", "type:${typeUrl.type} -> $index-${typeUrl.url}")
                 if (!typeUrl.url.isEmpty()) {
@@ -282,23 +283,23 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    /*从播放另一个链接 获取视频 mp4*/
-    private fun getUrlFromType1(pageUrl: String, callback: (String) -> Unit) = Repository.instance.loadPage(pageUrl, { htmlPage ->
-        Observable.just(htmlPage)
-                .subscribeOn(Schedulers.io())
-                .map { htmlPage ->
-                    var url = ""
-                    val regexUrl = """var url=.+?;"""
-                    Regex(regexUrl).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
-                        var result = t.replace("var url=", "").replace(";", "").replace("'", "")
-                        url = result
-                    }
-                    url
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { url ->
-                    // 动漫全集列表
-                    callback.invoke(url)
-                }
-    }, {})
+//    /*从播放另一个链接 获取视频 mp4*/
+//    private fun getUrlFromType1(pageUrl: String, callback: (String) -> Unit) = Repository.instance.loadPage(pageUrl, { htmlPage ->
+//        Observable.just(htmlPage)
+//                .subscribeOn(Schedulers.io())
+//                .map { htmlPage ->
+//                    var url = ""
+//                    val regexUrl = """var url=.+?;"""
+//                    Regex(regexUrl).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
+//                        var result = t.replace("var url=", "").replace(";", "").replace("'", "")
+//                        url = result
+//                    }
+//                    url
+//                }
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe { url ->
+//                    // 动漫全集列表
+//                    callback.invoke(url)
+//                }
+//    }, {})
 }

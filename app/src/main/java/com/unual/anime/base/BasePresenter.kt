@@ -4,26 +4,17 @@ import com.bumptech.glide.manager.LifecycleListener
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 
+
 /**
  * Created by Administrator on 2018/6/20.
  */
-class BasePresenter<V, T>(view: V, context: T) : LifecycleListener {
+open class BasePresenter<V, T>(view: V, context: T) : LifecycleListener {
     protected var mContextRef: Reference<T>? = null
     protected var mViewRef: Reference<V>? = null
 
     init {
         attachContext(context)
         attachView(view)
-        setListener()
-    }
-
-    override fun onStart() {
-    }
-
-    override fun onStop() {
-    }
-
-    override fun onDestroy() {
     }
 
     private fun attachContext(context: T) {
@@ -34,9 +25,36 @@ class BasePresenter<V, T>(view: V, context: T) : LifecycleListener {
         mViewRef = WeakReference(view)
     }
 
-    fun setListener() {
-        var context = mContextRef?.get()
-        if (context != null) {
+    fun isViewAttached(): Boolean {
+        return mViewRef?.get() != null
+    }
+
+    fun isContextAttached(): Boolean {
+        return mContextRef?.get() != null
+    }
+
+    private fun detachView() {
+        if (isViewAttached()) {
+            mViewRef?.clear()
         }
     }
+
+    private fun detachContext() {
+        if (isContextAttached()) {
+            mContextRef?.clear()
+        }
+    }
+
+
+    override fun onStart() {
+    }
+
+    override fun onStop() {
+    }
+
+    override fun onDestroy() {
+        detachView()
+        detachContext()
+    }
+
 }

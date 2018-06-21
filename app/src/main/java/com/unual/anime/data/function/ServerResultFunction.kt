@@ -1,7 +1,7 @@
 package com.unual.anime.data.function
 
 import com.unual.anime.data.exception.ServerException
-import com.unual.anime.data.request.HttpResponse
+import com.unual.anime.data.HttpResponse
 import io.reactivex.annotations.NonNull
 import io.reactivex.functions.Function
 

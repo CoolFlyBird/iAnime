@@ -2,6 +2,7 @@ package com.unual.anime.data.api
 
 import com.unual.anime.data.Anime
 import com.unual.anime.data.AnimeVideo
+import com.unual.anime.data.HttpResponse
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path

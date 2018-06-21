@@ -39,12 +39,12 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
             // 设置空白布局
 //            mAdapter?.emptyView = MEmptyView(this).view
         }
-        mAdapter?.onItemClickListener = this
+        mAdapter.onItemClickListener = this
         // 加载更多
         if (isOpenLoadMore) {
-            mAdapter?.setOnLoadMoreListener(this, recyclerView)
+            mAdapter.setOnLoadMoreListener(this, recyclerView)
             // 设置加载状态布局
-            mAdapter?.setLoadMoreView(MLoadMoreView())
+            mAdapter.setLoadMoreView(MLoadMoreView())
         }
     }
 
@@ -62,7 +62,7 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
     }
 
     fun clearAdapterData() {
-        mAdapter?.setNewData(null)
+        mAdapter.setNewData(null)
     }
 
     override fun getAdapter(): BaseQuickAdapter<DATA, BaseViewHolder> {
@@ -94,22 +94,22 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
         // 请求数据完成
         if (swipeRefreshLayout == null) return
         swipeRefreshLayout.isRefreshing = false
-        mAdapter?.setEnableLoadMore(true)
+        mAdapter.setEnableLoadMore(true)
         val size = data?.size ?: 0
         if (isRefresh) {
-            mAdapter?.setNewData(data)
+            mAdapter.setNewData(data)
             isRefresh = false
         } else {
             if (size > 0) {
-                mAdapter?.addData(data!!)
+                mAdapter.addData(data!!)
             }
         }
         if (size < pageSize) {
             // 没有更多了
-            mAdapter?.loadMoreEnd()
+            mAdapter.loadMoreEnd()
         } else {
             // 本次加载更多完成
-            mAdapter?.loadMoreComplete()
+            mAdapter.loadMoreComplete()
         }
     }
 
@@ -118,15 +118,15 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.isRefreshing = false
         }
-        mAdapter?.setEnableLoadMore(true)
-        mAdapter?.loadMoreFail()
+        mAdapter.setEnableLoadMore(true)
+        mAdapter.loadMoreFail()
     }
 
     // ========================================================================================== //
 
     override fun onRefresh() {
         if (isOpenLoadMore) {
-            mAdapter?.setEnableLoadMore(false)
+            mAdapter.setEnableLoadMore(false)
         }
         isRefresh = true
         page = 1
@@ -135,7 +135,7 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
 
     override fun onLoadMoreRequested() {
         page++
-        mAdapter?.setEnableLoadMore(true)
+        mAdapter.setEnableLoadMore(true)
         isRefresh = false
         loadListData()
     }
