@@ -18,14 +18,14 @@ interface IFinishAnimeView : IBaseView {
 }
 
 interface IFinishAnimePresenter {
-    fun loadAnimeList(page: Int, limit: Int)
+    fun loadAnimeList(filter: String, page: Int, limit: Int)
 }
 
 class FinishAnimePresenter(var view: IFinishAnimeView, var context: BaseFragment)
     : BasePresenter<IFinishAnimeView, BaseFragment>(view, context), IFinishAnimePresenter {
-    override fun loadAnimeList(page: Int, limit: Int) {
+    override fun loadAnimeList(filter: String, page: Int, limit: Int) {
         HttpRxObservable
-                .getObservable(ApiService.instance.getAnimeService().loadAnimeList(page, limit), context)
+                .getObservable(ApiService.instance.getAnimeService().loadAnimeList(filter, page, limit), context)
                 .subscribe(object : HttpRxObserver<ArrayList<Anime>>() {
                     override fun onStart(d: Disposable) {
                         mViewRef?.get()?.showLoading()

@@ -1,7 +1,6 @@
 package com.unual.anime.ui
 
 import android.support.v4.widget.SwipeRefreshLayout
-import android.util.Log
 import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -13,12 +12,17 @@ import com.unual.anime.data.entity.Anime
 import com.unual.anime.utils.Constants
 import kotlinx.android.synthetic.main.fragment_finish_anime.*
 import org.greenrobot.eventbus.EventBus
+import kotlin.properties.Delegates
 
 /**
  * Created by unual on 2018/6/14.
  */
 class FinishAnimeFragment : BaseListFragment<Anime>(), IFinishAnimeView {
-    lateinit var presenter: IFinishAnimePresenter
+    private lateinit var presenter: IFinishAnimePresenter
+    var filter: String by Delegates.observable("") { _, old, new ->
+        println("$old - $new -> $filter")
+        onRefresh()
+    }
 
     override fun getLayoutId(): Int = R.layout.fragment_finish_anime
 
@@ -38,8 +42,7 @@ class FinishAnimeFragment : BaseListFragment<Anime>(), IFinishAnimeView {
     }
 
     override fun loadListData() {
-        Log.e("TAG", "loadListData:${page} - ${pageSize}")
-        presenter.loadAnimeList(page, pageSize)
+        presenter.loadAnimeList(filter, page, pageSize)
     }
 
     override fun showLoading() {
@@ -51,7 +54,6 @@ class FinishAnimeFragment : BaseListFragment<Anime>(), IFinishAnimeView {
     }
 
     override fun bindAdapter(): BaseQuickAdapter<Anime, BaseViewHolder> {
-        Log.e("TAG", "bindAdapter")
         return AnimeListAdapter(R.layout.item_anime_list, { anime ->
             var value = getValue(anime.animeName + Constants.LAST)
             if (!value.isEmpty()) {

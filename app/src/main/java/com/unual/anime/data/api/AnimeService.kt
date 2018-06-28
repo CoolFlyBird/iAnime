@@ -16,7 +16,7 @@ interface AnimeService {
     fun loadAnime(@Path("id") id: Int): Observable<Anime>
 
     @GET("anime/list")
-    fun loadAnimeList(@Query("page") page: Int, @Query("limit") limit: Int): Observable<ArrayList<Anime>>
+    fun loadAnimeList(@Query("filter") filter: String, @Query("page") page: Int, @Query("limit") limit: Int): Observable<ArrayList<Anime>>
 
     @GET("anime/{id}/video")
     fun loadAnimeVideo(@Path("id") id: Int, @Query("page") page: Int, @Query("limit") limit: Int): Observable<ArrayList<AnimeVideo>>

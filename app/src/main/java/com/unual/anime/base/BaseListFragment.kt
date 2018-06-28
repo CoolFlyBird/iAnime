@@ -56,7 +56,7 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
                 swipeRefreshLayout.isRefreshing = true
             }
             isRefresh = true
-            page = 1
+            page = 0
             loadListData()
         }
     }
@@ -129,7 +129,7 @@ abstract class BaseListFragment<DATA> : BaseFragment(),
             mAdapter.setEnableLoadMore(false)
         }
         isRefresh = true
-        page = 1
+        page = 0
         loadListData()
     }
 
