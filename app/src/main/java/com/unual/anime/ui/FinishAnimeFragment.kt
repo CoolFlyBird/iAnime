@@ -59,8 +59,8 @@ class FinishAnimeFragment : BaseListFragment<Anime>(), IFinishAnimeView {
             if (!value.isEmpty()) {
                 anime.record = value
             }
-            var anima = Anima(anime.animeName, anime.animeUrl, anime.record)
-            EventBus.getDefault().post(anima)
+//            var anima = Anima(anime.animeName, anime.animeUrl, anime.record)
+            EventBus.getDefault().post(anime)
         })
     }
 }

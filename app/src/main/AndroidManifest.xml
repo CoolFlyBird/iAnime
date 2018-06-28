@@ -16,6 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.unual.anime.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,8 +24,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.unual.anime.ui.AnimaActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.unual.anime.ui.AnimeActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.unual.anime.ui.WebPlayerActivity"
             android:screenOrientation="landscape"

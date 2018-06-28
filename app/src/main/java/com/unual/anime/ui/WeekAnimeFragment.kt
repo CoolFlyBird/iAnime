@@ -23,10 +23,7 @@ import java.util.*
 /**
  * Created by unual on 2018/6/14.
  */
-class WeekAnimeFragment : BaseFragment()
-//        , SwipeRefreshLayout.OnRefreshListener
-{
-    private val parm = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+class WeekAnimeFragment : BaseFragment() {
     private val fragments: ArrayList<DayAnimeFragment> = ArrayList()
     private var week = ArrayList<WeekDay>()
 
@@ -51,8 +48,6 @@ class WeekAnimeFragment : BaseFragment()
         }
         viewPager.adapter = MyPagerAdapter(fragmentManager, fragments, week)
         tabLayout.setupWithViewPager(viewPager)
-//        refresh.setOnRefreshListener(this)
-//        onRefresh()
         selectToday()
     }
 
@@ -63,58 +58,6 @@ class WeekAnimeFragment : BaseFragment()
         var index = weekday - 2
         if (index < 0) index = 6
         tabLayout.getTabAt(index)?.select()
-    }
-
-//    override fun onRefresh() {
-//        refresh.isRefreshing = true
-//        getWeekAnima(week, { list ->
-//            refresh.isRefreshing = false
-//            for (i in 0 until list.size) {
-//                fragments[i].setNewData(list[i])
-//            }
-//        })
-//    }
-
-    // 更新动漫列表
-    private fun getOneDay(page: String, week: List<WeekDay>, callback: (List<List<Anima>>) -> Unit) {
-        var jxDocument = JXDocument.create(page)
-        Observable.fromIterable(week)
-                .subscribeOn(Schedulers.io())
-                .map { day ->
-                    var namePath = "//ul[@class=\"wrp animate\"]/li[@class=\"${day.value()}\"]/div[@class=\"book small\"]/a/figure/figcaption/p[1]/text()"
-                    var urlPath = "//ul[@class=\"wrp animate\"]/li[@class=\"${day.value()}\"]/div[@class=\"book small\"]/a/@href"
-                    val nameResult = jxDocument.sel(namePath)
-                    val urlResult = jxDocument.sel(urlPath)
-                    var result: ArrayList<Anima> = ArrayList()
-                    for (i in 0 until nameResult.size) {
-                        var name = nameResult[i].toString()
-                        var url = "http://www.dilidili.wang${urlResult[i]}"
-                        var anima = Anima(name, url)
-                        result.add(anima)
-                    }
-                    result
-                }
-                .map { list ->
-                    for (anima in list) {
-                        var value = getValue(anima.name + Constants.LAST)
-                        if (!value.isEmpty()) {
-                            anima.record = value
-                        }
-                    }
-                    list
-                }
-                .collect(
-                        // 动漫列表(一周列表) -> 动漫列表(一天列表)
-                        { ArrayList<ArrayList<Anima>>() },
-                        { list, item ->
-                            list.add(item)
-                        }
-                )
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { list ->
-                    // 动漫列表(一周列表) contain 动漫列表(一天列表)
-                    callback.invoke(list)
-                }
     }
 
 

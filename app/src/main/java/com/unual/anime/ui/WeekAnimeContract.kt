@@ -39,14 +39,26 @@ class WeekAnimePresenter(var view: IWeekAnimeView, var context: BaseFragment) : 
                 .map { page ->
                     var jxDocument = JXDocument.create(page.toString())
                     var namePath = "//ul[@class=\"wrp animate\"]/li[@class=\"${day.value()}\"]/div[@class=\"book small\"]/a/figure/figcaption/p[1]/text()"
+                    var imgPath = "//ul[@class=\"wrp animate\"]/li[@class=\"${day.value()}\"]/div[@class=\"book small\"]/a/figure/img/@src"
                     var urlPath = "//ul[@class=\"wrp animate\"]/li[@class=\"${day.value()}\"]/div[@class=\"book small\"]/a/@href"
                     val nameResult = jxDocument.sel(namePath)
+                    val imgResult = jxDocument.sel(imgPath)
                     val urlResult = jxDocument.sel(urlPath)
                     var result: ArrayList<Anime> = ArrayList()
                     for (i in 0 until nameResult.size) {
                         var name = nameResult[i].toString()
-                        var url = "http://www.dilidili.wang${urlResult[i]}"
-                        var anime = Anime("", name, url)
+                        var url = if (urlResult[i].toString().contains("www.dilidili.wang")) {
+                            "${urlResult[i]}"
+                        } else {
+                            "http://www.dilidili.wang${urlResult[i]}"
+                        }
+
+                        var img = if (imgResult[i].toString().contains("www.dilidili.wang")) {
+                            "${imgResult[i]}"
+                        } else {
+                            "http://www.dilidili.wang${imgResult[i]}"
+                        }
+                        var anime = Anime(0, name, url, img)
                         result.add(anime)
                     }
                     result
@@ -65,22 +77,5 @@ class WeekAnimePresenter(var view: IWeekAnimeView, var context: BaseFragment) : 
                     mViewRef?.get()?.closeLoading()
                     mViewRef?.get()?.onAnimeLoad(list)
                 }
-//                .subscribe {
-//                    object : HttpRxObserver<ArrayList<Anime>>() {
-//                        override fun onStart(d: Disposable) {
-//                            mViewRef?.get()?.showLoading()
-//                        }
-//
-//                        override fun onError(e: ApiException) {
-//                            mViewRef?.get()?.closeLoading()
-//                            mViewRef?.get()?.showToast(e.msg)
-//                        }
-//
-//                        override fun onSuccess(list: ArrayList<Anime>) {
-//                            mViewRef?.get()?.closeLoading()
-//                            mViewRef?.get()?.onAnimeLoad(list)
-//                        }
-//                    }
-//                }
     }
 }

@@ -119,7 +119,6 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements Medi
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
-        Log.e("TAG", "newProgress -> " + newProgress);
         super.onProgressChanged(view, newProgress);
     }
 

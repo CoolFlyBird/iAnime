@@ -10,6 +10,8 @@ import android.view.Menu
 import com.unual.anime.base.BaseActivity
 import com.unual.anime.base.BaseFragment
 import com.unual.anime.data.entity.Anima
+import com.unual.anime.data.entity.Anime
+import com.unual.anime.ui.AnimaActivity
 import com.unual.anime.ui.AnimeActivity
 import com.unual.anime.ui.FinishAnimeFragment
 import com.unual.anime.ui.WeekAnimeFragment
@@ -124,10 +126,19 @@ class MainActivity : BaseActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(anima: Anima) {
-        val intent = Intent(this, AnimeActivity::class.java)
+        val intent = Intent(this, AnimaActivity::class.java)
         intent.putExtra(Constants.KEY_INTENT, anima)
         startActivity(intent)
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(anime: Anime) {
+        val intent = Intent(this, AnimeActivity::class.java)
+        intent.putExtra(Constants.KEY_INTENT, anime)
+        startActivity(intent)
+    }
+
+
 
     @AfterPermissionGranted(Constants.REQUEST_CODE)
     fun checkPermissions() {

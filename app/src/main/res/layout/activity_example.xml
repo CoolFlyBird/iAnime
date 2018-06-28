@@ -37,12 +37,23 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/switchButton"
+        android:id="@+id/switchLine"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/lay_40"
         android:gravity="center"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:text="线路1"
+        android:textColor="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/switchAgent"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/lay_40"
+        android:layout_toRightOf="@+id/switchLine"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="电脑"
         android:textColor="@color/colorPrimary" />
 </RelativeLayout>

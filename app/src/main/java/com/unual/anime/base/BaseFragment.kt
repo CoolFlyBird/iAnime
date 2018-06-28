@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.trello.rxlifecycle2.components.support.RxFragment
 import com.unual.anime.data.entity.Anima
+import com.unual.anime.ui.AnimaActivity
 import com.unual.anime.utils.Constants
-import com.unual.anime.ui.AnimeActivity
 import com.unual.anime.utils.DialogUtils
 import com.unual.anime.utils.ToastUtil
 import org.greenrobot.eventbus.EventBus
@@ -58,7 +58,7 @@ open abstract class BaseFragment : RxFragment(), IBaseView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(anima: Anima) {
-        val intent = Intent(context, AnimeActivity::class.java)
+        val intent = Intent(context, AnimaActivity::class.java)
         intent.putExtra(Constants.KEY_INTENT, anima)
         startActivity(intent)
     }

@@ -1,5 +1,6 @@
 package com.unual.anime.ui
 
+import android.util.Log
 import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -18,7 +19,6 @@ import java.util.ArrayList
  * Created by unual on 2018/6/22.
  */
 class DayAnimeFragment : BaseListFragment<Anime>(), IWeekAnimeView {
-
     val presenter by lazy { WeekAnimePresenter(this, this) }
     var day: WeekDay = WeekDay.Mon
     override fun getLayoutId() = R.layout.a_common_list
@@ -44,6 +44,9 @@ class DayAnimeFragment : BaseListFragment<Anime>(), IWeekAnimeView {
     }
 
     override fun onAnimeLoad(list: ArrayList<Anime>) {
+        for (i in list) {
+            Log.e("TAG", "${i.animeName}->${i.animeUrl}")
+        }
         onSetLoadData(list)
     }
 

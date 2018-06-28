@@ -12,32 +12,32 @@ import com.unual.anime.adapter.AnimeVideosAdapter
 import com.unual.anime.base.BaseActivity
 import com.unual.anime.base.Utils
 import com.unual.anime.data.ApiService
-import com.unual.anime.data.entity.*
+import com.unual.anime.data.entity.Anima
+import com.unual.anime.data.entity.AnimaInfo
 import com.unual.anime.utils.Constants
+import com.unual.anime.data.entity.TypeUrl
 import com.unual.jsoupxpath.JXDocument
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.a_common_list.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by Administrator on 2018/5/29.
  */
 
-class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAnimeView {
-    val presenter by lazy { AnimePresenter(this, this) }
+class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var adapter: AnimeVideosAdapter
     lateinit var animaInfo: AnimaInfo
-    lateinit var anime: Anime
+    lateinit var anima: Anima
     lateinit var playName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.a_common_list)
-        anime = intent.getSerializableExtra(Constants.KEY_INTENT) as Anime
-        title = anime.animeName
-//        animaInfo = AnimaInfo(anima)
+        anima = intent.getSerializableExtra(Constants.KEY_INTENT) as Anima
+        title = anima.name
+        animaInfo = AnimaInfo(anima)
         refresh.setOnRefreshListener(this)
         adapter = AnimeVideosAdapter(R.layout.item_video_list, { animaVideo ->
             if (animaVideo.checked) {
@@ -54,24 +54,11 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAni
         onRefresh()
     }
 
-    override fun showLoading() {
-        refresh.isRefreshing = true
-    }
-
-    override fun closeLoading() {
-        refresh.isRefreshing = false
-    }
-
-    override fun showToast(msg: String) {
-        super.showToast(msg)
-        refresh.isRefreshing = false
-    }
-
     //打开视频
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
         playName = animaVideo.videoName
         Log.e("TAG", "open in web${animaVideo.useWebPlayer} - ${animaVideo.videoUrl} is {$animaVideo.videoUrl.isEmpty()}")
-        setValue(anime.animeName + Constants.LAST, "${Utils.format(Date(), "MM.dd")}·${animaVideo.videoName}")
+        setValue(anima.name + Constants.LAST, "${Utils.format(Date(), "MM.dd")}·${animaVideo.videoName}")
         if (animaVideo.useWebPlayer && !animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, WebPlayerActivity::class.java)
             intent.putExtra(Constants.KEY_INTENT, animaVideo)
@@ -79,8 +66,6 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAni
         } else if (!animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, VideoPlayerActivity::class.java)
             intent.putExtra(Constants.KEY_INTENT, animaVideo)
-            var record = getValue(anime.animeName + Constants.LAST)
-            animaInfo = AnimaInfo(Anima(anime.animeName, anime.animeUrl, record))
             intent.putExtra(Constants.KEY_INTENT_EXT, animaInfo)
             startActivity(intent)
         }
@@ -89,20 +74,17 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAni
     //刷新页面
     override fun onRefresh() {
         refresh.isRefreshing = true
-        presenter.loadAnimeVideoList(anime.animeId, 0, 10000)
+        ApiService.instance.getPageService()
+                .loadPage(animaInfo.anima.url)
+                .map { htmlPage ->
+                    getAnimePages(htmlPage, { list ->
+                        refresh.isRefreshing = false
+                        adapter.setNewData(list)
+                        adapter.data
+                        autoCheckVideoUrl(list)
+                    })
+                }.subscribe()
     }
-
-    override fun onLoadAnimeVideoList(data: List<AnimeVideo>) {
-        refresh.isRefreshing = false
-        var list = ArrayList<AnimaInfo.AnimaVideo>()
-        for (d in data) {
-            list.add(AnimaInfo.AnimaVideo(d.videoName, d.videoPage, false))
-        }
-        adapter.setNewData(list)
-        adapter.data
-        autoCheckVideoUrl(list)
-    }
-
 
     //自动检查 并解析 有无链接
     private fun autoCheckVideoUrl(list: List<AnimaInfo.AnimaVideo>) {
@@ -132,7 +114,6 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAni
 
     // 获取播放链接（mp4 或者 另一个链接）
     private fun getAnimeVideo(pageUrl: String, callback: (TypeUrl) -> Unit) {
-        Log.e("TAG", "pageUrl:${pageUrl}")
         ApiService.instance.getPageService()
                 .loadPage(pageUrl)
                 .map { htmlPage ->
@@ -148,6 +129,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAni
     private fun parsePage2Anime(htmlPage: String): ArrayList<AnimaInfo.AnimaVideo> {
         val jxDocument = JXDocument.create(htmlPage)
         val namePath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/em/text()"
+        val imgPath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/em/text()"
         val urlPath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/@href"
         var nameResult = jxDocument.sel(namePath)
         var urlResult = jxDocument.sel(urlPath)
@@ -155,7 +137,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAni
         for (i in 0 until nameResult.size) {
             var name = nameResult[i].toString()
             for (ii in nameResult[i].toString().split(" ")) {
-                if (anime.animeName.contains(ii)) {
+                if (animaInfo.anima.name.contains(ii)) {
                     name = name.replace(ii, "")
                 }
             }
@@ -172,7 +154,7 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAni
             for (i in 0 until urlResult.size) {
                 var name = nameResult[2 * i].toString()
                 for (ii in nameResult[2 * i].toString().split(" ")) {
-                    if (anime.animeName.contains(ii)) {
+                    if (animaInfo.anima.name.contains(ii)) {
                         name = name.replace(ii, "")
                     }
                 }
@@ -182,7 +164,6 @@ class AnimeActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, IAni
                 result.add(AnimaInfo.AnimaVideo(name, url))
             }
         }
-        Log.e("TAG", "result.sizea -> ${result.size}")
         return result
     }
 
