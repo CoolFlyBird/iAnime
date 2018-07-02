@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_example.*
 class WebPlayerActivity : FullScreenActivity() {
     private var webChromeClient: VideoEnabledWebChromeClient? = null
     private lateinit var animaVideo: AnimaInfo.AnimaVideo
-    private var agentIndex = 0
+    private var agentIndex = 1
     private var playerIndex = 0
     private var url: String = ""
 //    private var webChromeClient: WebChromeClient? = null
@@ -66,27 +66,25 @@ class WebPlayerActivity : FullScreenActivity() {
         webView.webChromeClient = webChromeClient
         webView.webViewClient = InsideWebViewClient()
         animaVideo = intent.getSerializableExtra(Constants.KEY_INTENT) as AnimaInfo.AnimaVideo
-        playerIndex = animaVideo.checkType
         url = animaVideo.videoUrl
         switchLine.setOnClickListener {
             playerIndex++
             if (playerIndex < -1) playerIndex = 0
             if (playerIndex > animaVideo.line.size) playerIndex = -1
             setUrl(playerIndex)
-            loadUrl(agentIndex)
+            webView.loadUrl(url)
         }
-        agentIndex = 0
         switchAgent.setOnClickListener {
             agentIndex++
             if (agentIndex >= UserAgent.values().size) {
                 agentIndex = 0
             }
             setAgent(agentIndex)
-            loadUrl(agentIndex)
+            webView.loadUrl(url)
         }
         setUrl(playerIndex)
         setAgent(agentIndex)
-        loadUrl(agentIndex)
+        webView.loadUrl(url)
     }
 
     fun setUrl(index: Int) {
@@ -101,18 +99,11 @@ class WebPlayerActivity : FullScreenActivity() {
         }
     }
 
-    fun setAgent(index: Int) {
+    private fun setAgent(index: Int) {
         var agent = UserAgent.values()[index]
+        Log.e("TAG", "agent:${agent.key()}")
         switchAgent.text = agent.key()
         webView.settings.userAgentString = agent.value()
-    }
-
-    fun loadUrl(index: Int) {
-        var agent = UserAgent.values()[index]
-        switchAgent.text = agent.key()
-        webView.settings.userAgentString = agent.value()
-        Log.e("TAG", "${agent.key()} - $url")
-        webView.loadUrl(url)
     }
 
     private inner class InsideWebViewClient : WebViewClient() {

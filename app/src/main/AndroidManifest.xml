@@ -16,6 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.unual.anime.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -25,18 +26,22 @@
         </activity>
         <activity
             android:name="com.unual.anime.ui.AnimaActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.unual.anime.ui.AnimeActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.unual.anime.ui.WebPlayerActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.unual.anime.ui.VideoPlayerActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

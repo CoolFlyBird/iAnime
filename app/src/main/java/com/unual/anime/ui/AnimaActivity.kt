@@ -57,7 +57,7 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     //打开视频
     private fun openVideo(animaVideo: AnimaInfo.AnimaVideo) {
         playName = animaVideo.videoName
-        Log.e("TAG", "open in web${animaVideo.useWebPlayer} - ${animaVideo.videoUrl} is {$animaVideo.videoUrl.isEmpty()}")
+        Log.e("TAG", "open in web${animaVideo.useWebPlayer} - ${animaVideo.videoUrl} is ${animaVideo.videoUrl.isEmpty()}")
         setValue(anima.name + Constants.LAST, "${Utils.format(Date(), "MM.dd")}·${animaVideo.videoName}")
         if (animaVideo.useWebPlayer && !animaVideo.videoUrl.isEmpty()) {
             var intent = Intent(this, WebPlayerActivity::class.java)
@@ -129,7 +129,6 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
     private fun parsePage2Anime(htmlPage: String): ArrayList<AnimaInfo.AnimaVideo> {
         val jxDocument = JXDocument.create(htmlPage)
         val namePath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/em/text()"
-        val imgPath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/em/text()"
         val urlPath = "//div[@class=\"swiper-slide\"]/ul[@class=\"clear\"]/li/a/@href"
         var nameResult = jxDocument.sel(namePath)
         var urlResult = jxDocument.sel(urlPath)
@@ -211,25 +210,6 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         } else if (!sourceUrl.isEmpty()) {
             url = sourceUrl
             type = -1
-//            var array = sourceUrl.split("/")
-//            if (array.size >= 3) {
-//                var sourceUrlHost = array[2]
-//                var index = 99
-//                for (i in 0 until lib.size) {
-//                    for (j in 0 until lib[i].size) {
-//                        if (sourceUrlHost == lib[i][j]) {
-//                            index = i
-//                            type = i
-//                            break
-//                        }
-//                    }
-//                }
-//                if (index != 99) {
-//                    url = line[index] + sourceUrl
-//                } else {
-//                    url = sourceUrl
-//                }
-//            }
         }
         url = url.trim()
         return TypeUrl(type, url, line)
@@ -268,15 +248,6 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             }
             1, 3 -> {
             }
-//                getUrlFromType1(typeUrl.url, { result ->
-//                Log.e("TAG", "type:1,3 -> $index-${typeUrl.url} $result")
-//                if (!result.isEmpty()) {
-//                    animaVideo.videoUrl = result
-//                    animaVideo.checked = true
-//                }
-//                if (index == -1) openVideo(animaVideo)
-//                else adapter.notifyItemChanged(index)
-//            })
             else -> {
                 Log.e("TAG", "type:${typeUrl.type} -> $index-${typeUrl.url}")
                 if (!typeUrl.url.isEmpty()) {
@@ -288,24 +259,4 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
             }
         }
     }
-
-//    /*从播放另一个链接 获取视频 mp4*/
-//    private fun getUrlFromType1(pageUrl: String, callback: (String) -> Unit) = Repository.instance.loadPage(pageUrl, { htmlPage ->
-//        Observable.just(htmlPage)
-//                .subscribeOn(Schedulers.io())
-//                .map { htmlPage ->
-//                    var url = ""
-//                    val regexUrl = """var url=.+?;"""
-//                    Regex(regexUrl).findAll(htmlPage).toList().flatMap(MatchResult::groupValues).forEach { t ->
-//                        var result = t.replace("var url=", "").replace(";", "").replace("'", "")
-//                        url = result
-//                    }
-//                    url
-//                }
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe { url ->
-//                    // 动漫全集列表
-//                    callback.invoke(url)
-//                }
-//    }, {})
 }
