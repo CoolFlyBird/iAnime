@@ -27,6 +27,7 @@ import pub.devrel.easypermissions.EasyPermissions
 class MainActivity : BaseActivity() {
     private val param = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
     private var finishAnimeFragment: FinishAnimeFragment? = null
+    private var finishTVFragment: FinishAnimeFragment? = null
     private var weekAnimeFragment: WeekAnimeFragment? = null
     private var current: BaseFragment? = null
     private var optionMenuOn = false  //标示是否要显示optionmenu
@@ -43,14 +44,19 @@ class MainActivity : BaseActivity() {
         mainToolbar.setNavigationOnClickListener {
             drawerLayout.openDrawer(mainNavi)
         }
+        supportFragmentManager.fragments.clear()
 
         weekAnimeFragment = WeekAnimeFragment()
         finishAnimeFragment = FinishAnimeFragment()
+        finishTVFragment = FinishAnimeFragment()
+        finishTVFragment?.isTV = true
 
         supportFragmentManager.beginTransaction()
                 .add(R.id.mainContent, weekAnimeFragment)
                 .add(R.id.mainContent, finishAnimeFragment)
+                .add(R.id.mainContent, finishTVFragment)
                 .hide(weekAnimeFragment)
+                .hide(finishTVFragment)
                 .show(finishAnimeFragment)
                 .commit()
         current = finishAnimeFragment
@@ -73,6 +79,8 @@ class MainActivity : BaseActivity() {
                 }
                 R.id.navigation_drama -> {
                     mainTitle?.text = "日剧"
+                    supportFragmentManager.beginTransaction().hide(current).show(finishTVFragment).commit()
+                    current = finishTVFragment
                     item.isChecked = true
                     optionMenuOn = true
                 }
@@ -94,12 +102,16 @@ class MainActivity : BaseActivity() {
         searchView.onActionViewExpanded()// 当展开无输入内容的时候，没有关闭的图标
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                finishAnimeFragment?.filter = query
+                if (current is FinishAnimeFragment) {
+                    (current as FinishAnimeFragment)?.filter = query
+                }
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                finishAnimeFragment?.filter = newText
+                if (current is FinishAnimeFragment) {
+                    (current as FinishAnimeFragment)?.filter = newText
+                }
                 return true
             }
         })
@@ -137,7 +149,6 @@ class MainActivity : BaseActivity() {
         intent.putExtra(Constants.KEY_INTENT, anime)
         startActivity(intent)
     }
-
 
 
     @AfterPermissionGranted(Constants.REQUEST_CODE)

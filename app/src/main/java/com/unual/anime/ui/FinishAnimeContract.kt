@@ -19,6 +19,7 @@ interface IFinishAnimeView : IBaseView {
 
 interface IFinishAnimePresenter {
     fun loadAnimeList(filter: String, page: Int, limit: Int)
+    fun loadTVList(filter: String, page: Int, limit: Int)
 }
 
 class FinishAnimePresenter(var view: IFinishAnimeView, var context: BaseFragment)
@@ -26,6 +27,26 @@ class FinishAnimePresenter(var view: IFinishAnimeView, var context: BaseFragment
     override fun loadAnimeList(filter: String, page: Int, limit: Int) {
         HttpRxObservable
                 .getObservable(ApiService.instance.getAnimeService().loadAnimeList(filter, page, limit), context)
+                .subscribe(object : HttpRxObserver<ArrayList<Anime>>() {
+                    override fun onStart(d: Disposable) {
+                        mViewRef?.get()?.showLoading()
+                    }
+
+                    override fun onError(e: ApiException) {
+                        mViewRef?.get()?.closeLoading()
+                        mViewRef?.get()?.showToast(e.msg)
+                    }
+
+                    override fun onSuccess(list: ArrayList<Anime>) {
+                        mViewRef?.get()?.closeLoading()
+                        mViewRef?.get()?.onLoadAnimeList(list)
+                    }
+                })
+    }
+
+    override fun loadTVList(filter: String, page: Int, limit: Int) {
+        HttpRxObservable
+                .getObservable(ApiService.instance.getAnimeService().loadTVList(filter, page, limit), context)
                 .subscribe(object : HttpRxObserver<ArrayList<Anime>>() {
                     override fun onStart(d: Disposable) {
                         mViewRef?.get()?.showLoading()

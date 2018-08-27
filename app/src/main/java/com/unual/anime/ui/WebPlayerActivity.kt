@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.webkit.JsResult
 import android.webkit.SslErrorHandler
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -35,8 +34,17 @@ class WebPlayerActivity : FullScreenActivity() {
         val loadingView = layoutInflater.inflate(R.layout.view_loading_video, null)
         webChromeClient = object : VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView) {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                if (UserAgent.values()[agentIndex].needRemove()) {
+                if (newProgress == 100 && UserAgent.values()[agentIndex].needRemove()) {
+                    Log.e("TAG", "javascript")
                     webView?.loadUrl("javascript:function removeAd(){var jsDivTagName = document.getElementsByTagName(\"img\");for (var m = 0; m < jsDivTagName.length; m++) {jsDivTagName[m].style.display=\"none\";}}removeAd();")
+                    webView?.postDelayed({
+                        webView?.loadUrl("javascript:function removeAd(){var jsDivTagName = document.getElementsByTagName(\"img\");for (var m = 0; m < jsDivTagName.length; m++) {jsDivTagName[m].style.display=\"none\";}}removeAd();")
+                        webView?.loadUrl("javascript:function logPoster(){var jsDivTagName = document.getElementsByTagName(\"video\");for(var m = 0; m < jsDivTagName.length; m++){console.log(jsDivTagName[m].getAttribute(\"src\"))}}logPoster();")
+                        webView?.loadUrl("javascript:function logPoster(){var jsDivTagName = document.getElementsByTagName(\"video\");for(var m = 0; m < jsDivTagName.length; m++){console.log(jsDivTagName[m].getAttribute(\"controls\"))}}logPoster();")
+                        webView?.loadUrl("javascript:function logPoster(){var jsDivTagName = document.getElementsByTagName(\"video\");for(var m = 0; m < jsDivTagName.length; m++){console.log(jsDivTagName[m].getAttribute(\"width\"))}}logPoster();")
+                        webView?.loadUrl("javascript:function logPoster(){var jsDivTagName = document.getElementsByTagName(\"video\");for(var m = 0; m < jsDivTagName.length; m++){console.log(jsDivTagName[m].getAttribute(\"height\"))}}logPoster();")
+                        webView?.loadUrl("javascript:function logPoster(){var jsDivTagName = document.getElementsByTagName(\"video\");for(var m = 0; m < jsDivTagName.length; m++){console.log(jsDivTagName[m].getAttribute(\"poster\"))}}logPoster();")
+                    }, 2000)
                 }
                 super.onProgressChanged(view, newProgress)
             }
@@ -84,6 +92,7 @@ class WebPlayerActivity : FullScreenActivity() {
         }
         setUrl(playerIndex)
         setAgent(agentIndex)
+        Log.e("TAG", "url - $url")
         webView.loadUrl(url)
     }
 
@@ -108,6 +117,7 @@ class WebPlayerActivity : FullScreenActivity() {
 
     private inner class InsideWebViewClient : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+            Log.e("TAG", "shouldOverrideUrlLoading:$url")
             view.loadUrl(url)
             return true
         }

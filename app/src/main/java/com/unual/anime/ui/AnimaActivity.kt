@@ -39,16 +39,16 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         title = anima.name
         animaInfo = AnimaInfo(anima)
         refresh.setOnRefreshListener(this)
-        adapter = AnimeVideosAdapter(R.layout.item_video_list, { animaVideo ->
+        adapter = AnimeVideosAdapter(R.layout.item_video_list) { animaVideo ->
             if (animaVideo.checked) {
                 openVideo(animaVideo)
             } else {
-                getAnimeVideo(animaVideo.videoUrl, { typeUrl ->
+                getAnimeVideo(animaVideo.videoUrl) { typeUrl ->
                     animaVideo.line.addAll(typeUrl.line)
                     handleTypeUrl(typeUrl, animaVideo, -1)
-                })
+                }
             }
-        })
+        }
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
         onRefresh()
@@ -77,12 +77,12 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         ApiService.instance.getPageService()
                 .loadPage(animaInfo.anima.url)
                 .map { htmlPage ->
-                    getAnimePages(htmlPage, { list ->
+                    getAnimePages(htmlPage) { list ->
                         refresh.isRefreshing = false
                         adapter.setNewData(list)
                         adapter.data
                         autoCheckVideoUrl(list)
-                    })
+                    }
                 }.subscribe()
     }
 
@@ -91,10 +91,10 @@ class AnimaActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         Observable.fromIterable(list)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map { animaVideo ->
-                    getAnimeVideo(animaVideo.videoUrl, { typeUrl ->
+                    getAnimeVideo(animaVideo.videoUrl) { typeUrl ->
                         animaVideo.line.addAll(typeUrl.line)
                         handleTypeUrl(typeUrl, animaVideo, list.indexOf(animaVideo))
-                    })
+                    }
                 }.subscribe()
     }
 
